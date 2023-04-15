@@ -69,6 +69,13 @@ export class Agent {
 
   memoryStream: Memory[];
 
+  memoryCount: {
+    observation: number;
+    reflection: number;
+    plan: number;
+    conversation: number;
+  };
+
   latestPlanIteration: number;
 
   action: Action;
@@ -95,6 +102,12 @@ export class Agent {
     this.personality = personality;
     this.settings = settings;
     this.memoryStream = [];
+    this.memoryCount = {
+      observation: 0,
+      reflection: 0,
+      plan: 0,
+      conversation: 0,
+    };
     this.latestPlanIteration = 1;
     this.action = {
       status: "sleeping",

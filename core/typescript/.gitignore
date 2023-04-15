@@ -18,3 +18,7 @@ dist/
 # Operating system files
 Thumbs.db
 *.lock
+
+# env files
+.env
+.env.*

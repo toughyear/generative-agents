@@ -8,7 +8,11 @@
     "build": "tsc"
   },
   "devDependencies": {
+    "@types/node": "^18.15.11",
     "typescript": "^4.5.2"
   },
-  "author": "@toughyear"
+  "author": "@toughyear",
+  "dependencies": {
+    "openai": "^3.2.1"
+  }
 }
