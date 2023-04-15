@@ -4,7 +4,9 @@ import PhaserGame from "./phaserGame";
 import { Agent, AgentEngine } from "generative-agents";
 
 function App() {
-  const agent = new Agent("id_1", "Buri Buri Zaemon", 24, {
+  const ae = new AgentEngine(process.env.REACT_APP_OPENAI_API_KEY ?? "");
+
+  const agent = new Agent(ae, "id_1", "Buri Buri Zaemon", 24, {
     background: "A Samurai",
     currentGoal: "slay the dragon",
     innateTendency: ["brave", "rude", "lonewolf"],
@@ -13,18 +15,22 @@ function App() {
     values: ["honor", "loyalty", "justice"],
   });
 
-  const ae = new AgentEngine(process.env.REACT_APP_OPENAI_API_KEY ?? "");
-
   console.log("agent", agent);
-  console.log(
-    "imp score",
-    ae.getImportanceScore("buying grocery from Vilma's shop.")
-  );
-  console.log("imp score 2", ae.getImportanceScore("asking my crush out"));
-  console.log("embedding", ae.getEmbedding("asking my crush out"));
+  const handleObservation = async () => {
+    const observation = "buying grocery from Vilma's shop.";
+    await agent.observe(observation);
+    console.log("agent", agent);
+  };
 
   return (
     <div className='p-5 overflow-scroll'>
+      <button
+        className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+        onClick={handleObservation}
+      >
+        Add observation to memory
+      </button>
+
       <PhaserGame />
     </div>
   );

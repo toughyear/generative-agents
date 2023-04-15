@@ -1,3 +1,6 @@
+import { AgentEngine } from "./engine";
+import { dateToString } from "./helpers";
+
 type AgentPersonality = {
   background: string;
   innateTendency: string[];
@@ -59,6 +62,7 @@ interface Conversation extends BaseMemory {
 type Memory = Observation | Reflection | Plan | Conversation;
 
 export class Agent {
+  engine: AgentEngine;
   id: string;
   name: string;
   age: number;
@@ -84,6 +88,7 @@ export class Agent {
   location: string[];
 
   constructor(
+    engine: AgentEngine,
     id: string,
     name: string,
     age: number,
@@ -96,6 +101,7 @@ export class Agent {
     world: object = {},
     location: string[] = []
   ) {
+    this.engine = engine;
     this.id = id;
     this.name = name;
     this.age = age;
@@ -116,4 +122,21 @@ export class Agent {
     this.world = world;
     this.location = location;
   }
+
+  // add Observation
+  observe = async (description: string) => {
+    const importance = await this.engine.getImportanceScore(description);
+    const embedding = await this.engine.getEmbedding(description);
+    const memory: Observation = {
+      id: `obs_${this.memoryCount.observation + 1}`,
+      createdAt: dateToString(new Date()),
+      description,
+      importance,
+      latestAccess: dateToString(new Date()),
+      embedding,
+      type: MemoryType.OBSERVATION,
+    };
+    this.memoryStream.push(memory);
+    this.memoryCount.observation += 1;
+  };
 }
