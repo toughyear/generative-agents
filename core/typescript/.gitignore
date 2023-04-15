@@ -1,0 +1,20 @@
+# Node.js dependencies
+node_modules/
+
+# TypeScript output
+dist/
+
+# Development environment files
+.vscode/
+.idea/
+*.log
+*.bak
+*.swp
+*.swo
+*.tmp
+*.sublime*
+*.DS_Store
+
+# Operating system files
+Thumbs.db
+*.lock

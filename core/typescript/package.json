@@ -1,0 +1,14 @@
+{
+  "name": "generative-agents",
+  "version": "1.0.0",
+  "description": "framework to create humanoid generative agents",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "typescript": "^4.5.2"
+  },
+  "author": "@toughyear"
+}
