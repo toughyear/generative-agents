@@ -122,4 +122,49 @@ export class AgentEngine {
 
     return score;
   }
+
+  async getSalientQuestions(
+    description: string,
+    n: number = 3
+  ): Promise<string[]> {
+    const prompt = `Given only the information below, provide the ${n} most salient high-level questions we can answer about the subjects in the statements, formatted as follows:
+1. {Question}
+2. {Question}
+3. {Question}
+...
+
+INFORMATION: "${description}"
+`;
+
+    const parameters: CreateChatCompletionRequest = {
+      model: this.model,
+      messages: [
+        {
+          role: "user",
+          content: prompt,
+        },
+      ],
+      temperature: 0.8,
+      max_tokens: 200,
+      n: 1,
+    };
+
+    const response = await this.openai.createChatCompletion(parameters);
+    const generatedText = response.data.choices[0].message?.content.trim();
+
+    // Use a regular expression to match and extract the questions
+    const regex = /\d+\.\s*(.*?)\s*(?=\d+\.|$)/g;
+    let match;
+    const questions = [];
+
+    if (!generatedText) {
+      return [];
+    }
+
+    while ((match = regex.exec(generatedText)) !== null) {
+      questions.push(match[1]);
+    }
+
+    return questions.slice(0, n);
+  }
 }

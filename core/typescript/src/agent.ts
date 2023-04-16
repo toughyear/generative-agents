@@ -82,6 +82,8 @@ export class Agent {
 
   latestPlanIteration: number;
 
+  importanceScoreSumSinceLastPurge: number;
+
   action: Action;
 
   world: object;
@@ -115,6 +117,7 @@ export class Agent {
       conversation: 0,
     };
     this.latestPlanIteration = 1;
+    this.importanceScoreSumSinceLastPurge = 0;
     this.action = {
       status: "sleeping",
       emoji: ["😴"],
@@ -136,7 +139,75 @@ export class Agent {
       embedding,
       type: MemoryType.OBSERVATION,
     };
+
+    // update other states
     this.memoryStream.push(memory);
     this.memoryCount.observation += 1;
+    this.importanceScoreSumSinceLastPurge += importance;
+  };
+
+  reflect = async () => {
+    // get latest 100 memories
+    const memories = this.memoryStream.slice(-100);
+
+    // convert to a description string
+    const description = memories.map((memory) => memory.description).join("\n");
+
+    // get 5 top-level questions
+    const questions = await this.engine.getSalientQuestions(description, 5);
+
+    // for each relevant question, find the top closest memories using the retrieval score
+    const currentTime = new Date();
+
+    for (const question of questions) {
+      const queryEmbedding = await this.engine.getEmbedding(question);
+      const retrievalScores = await Promise.all(
+        memories.map(async (memory) => ({
+          memory,
+          score: await this.engine.getRetrievalScore(
+            memory.importance,
+            queryEmbedding,
+            memory.embedding,
+            new Date(memory.latestAccess),
+            currentTime
+          ),
+        }))
+      );
+
+      // Sort memories by retrieval score and take the top 3
+      const topMemories = retrievalScores
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 3)
+        .map((item) => item.memory);
+
+      // consider them retrieved, so update their latestAccess in the actual memory stream
+      topMemories.forEach((memory) => {
+        const index = this.memoryStream.findIndex(
+          (item) => item.id === memory.id
+        );
+        this.memoryStream[index].latestAccess = dateToString(currentTime);
+      });
+
+      const importance = await this.engine.getImportanceScore(question);
+
+      // Create a reflection for each relevant question and add evidence accordingly
+      const reflection: Reflection = {
+        id: `reflect_${this.memoryCount.reflection + 1}`,
+        createdAt: dateToString(currentTime),
+        description: question,
+        importance,
+        latestAccess: dateToString(currentTime),
+        embedding: queryEmbedding,
+        type: MemoryType.REFLECTION,
+        evidence: topMemories.map((memory) => memory.id),
+      };
+
+      // Update other states
+      this.memoryStream.push(reflection);
+      this.memoryCount.reflection += 1;
+    }
+
+    // purge importance score sum
+    this.importanceScoreSumSinceLastPurge = 0;
   };
 }
