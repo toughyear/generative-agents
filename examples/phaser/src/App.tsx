@@ -87,6 +87,21 @@ Rajiv Patel Abigail Chen is experimenting with new tools and techniques to creat
     console.log("imp questions", output);
   };
 
+  const handleDaySchedule = async () => {
+    const output = await ae.getDayPlan(
+      agent.name,
+      agent.age,
+      agent.personality
+    );
+    console.log("day schedule", output);
+  };
+
+  const createPlan = async () => {
+    await agent.createPlan();
+
+    console.log("agent", agent);
+  };
+
   return (
     <div className='p-5 overflow-scroll'>
       <button
@@ -100,6 +115,18 @@ Rajiv Patel Abigail Chen is experimenting with new tools and techniques to creat
         onClick={handleSalientQuestions}
       >
         get salient questions
+      </button>
+      <button
+        className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+        onClick={handleDaySchedule}
+      >
+        get day schedule
+      </button>
+      <button
+        className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+        onClick={createPlan}
+      >
+        create a plan
       </button>
 
       <PhaserGame />

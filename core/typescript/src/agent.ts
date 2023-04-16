@@ -1,65 +1,15 @@
 import { AgentEngine } from "./engine";
 import { dateToString } from "./helpers";
-
-type AgentPersonality = {
-  background: string;
-  innateTendency: string[];
-  learnedTendency: string[];
-  currentGoal: string;
-  lifestyle: string;
-  values: string[];
-};
-
-type AgentSettings = {
-  visualRange: number;
-  attention: number;
-  retention: number;
-};
-
-type Action = {
-  status: string;
-  emoji: string[];
-};
-
-enum MemoryType {
-  OBSERVATION = "OBSERVATION",
-  REFLECTION = "REFLECTION",
-  PLAN = "PLAN",
-  CONVERSATION = "CONVERSATION",
-}
-
-interface BaseMemory {
-  id: string;
-  createdAt: string;
-  description: string;
-  importance: number;
-  latestAccess: string;
-  embedding: number[];
-}
-
-interface Observation extends BaseMemory {
-  type: MemoryType.OBSERVATION;
-}
-
-interface Reflection extends BaseMemory {
-  type: MemoryType.REFLECTION;
-  evidence: string[];
-}
-
-interface Plan extends BaseMemory {
-  type: MemoryType.PLAN;
-  iteration: number;
-  granularity: "DAY" | "HOUR" | "MINUTE";
-  start: number;
-  end: number;
-  parent: string[];
-}
-
-interface Conversation extends BaseMemory {
-  type: MemoryType.CONVERSATION;
-}
-
-type Memory = Observation | Reflection | Plan | Conversation;
+import {
+  Action,
+  AgentPersonality,
+  AgentSettings,
+  Memory,
+  MemoryType,
+  Observation,
+  Plan,
+  Reflection,
+} from "./types";
 
 export class Agent {
   engine: AgentEngine;
@@ -116,7 +66,7 @@ export class Agent {
       plan: 0,
       conversation: 0,
     };
-    this.latestPlanIteration = 1;
+    this.latestPlanIteration = 0;
     this.importanceScoreSumSinceLastPurge = 0;
     this.action = {
       status: "sleeping",
@@ -210,4 +160,65 @@ export class Agent {
     // purge importance score sum
     this.importanceScoreSumSinceLastPurge = 0;
   };
+
+  async createPlan(): Promise<void> {
+    try {
+      const dayPlan = await this.engine.getDayPlan(
+        this.name,
+        this.age,
+        this.personality
+      );
+
+      for (const planItem of dayPlan) {
+        const detailedPlan = await this.engine.decomposePlanItem(
+          this.name,
+          this.age,
+          this.personality,
+          dayPlan,
+          dayPlan.indexOf(planItem)
+        );
+
+        // Convert the detailed plan to Plan memory objects
+        const planMemories: Promise<Plan>[] = detailedPlan.map(
+          async (planItem): Promise<Plan> => {
+            const importance = await this.engine.getImportanceScore(
+              planItem.description
+            );
+            const embedding = await this.engine.getEmbedding(
+              planItem.description
+            );
+
+            // update memory count
+            this.memoryCount.plan += 1;
+
+            return {
+              id: `plan_${this.memoryCount.plan}`,
+              createdAt: dateToString(new Date()),
+              start: planItem.start,
+              end: planItem.end,
+              description: planItem.description,
+              type: MemoryType.PLAN,
+              embedding,
+              importance,
+              latestAccess: dateToString(new Date()),
+              granularity: "HOUR",
+              iteration: this.latestPlanIteration + 1,
+              parent: planItem.description,
+            };
+          }
+        );
+
+        // resolve the promises
+        const resolvedPlanMemories = await Promise.all(planMemories);
+
+        // Add the detailed plan to the memory stream
+        this.memoryStream.push(...resolvedPlanMemories);
+      }
+
+      // update latest plan iteration
+      this.latestPlanIteration += 1;
+    } catch (error) {
+      console.error("Error creating plan:", error);
+    }
+  }
 }

@@ -1,5 +1,6 @@
 import { Configuration, CreateChatCompletionRequest, OpenAIApi } from "openai";
 import { cosineSimilarity } from "./helpers";
+import { AgentPersonality } from "./types";
 
 /**
  * returns a engine instance that manages agents and their inference requirements
@@ -166,5 +167,179 @@ INFORMATION: "${description}"
     }
 
     return questions.slice(0, n);
+  }
+
+  async getDayPlan(
+    name: string,
+    age: number,
+    personality: AgentPersonality
+  ): Promise<
+    {
+      start: number;
+      end: number;
+      description: string;
+    }[]
+  > {
+    const prompt = `Here is a description of ${name}, aged ${age} \n
+Background: ${personality.background}
+Innate Tendencies: ${personality.innateTendency.join(", ")}
+Learned Tendencies: ${personality.learnedTendency.join(", ")}
+Current Goal: ${personality.currentGoal}
+Lifestyle: ${personality.lifestyle}
+Values: ${personality.values.join(", ")}
+
+What would ${name}'s day look like? Write in the following format:
+[800,1000] Wake up and get ready for the day
+[1000,1030] Prepare breakfast and eat
+[1030,1700] Work in office
+...
+[1700,1800] Prepare dinner and eat
+[1800,2000] Watch TV
+[2000,800] Sleep
+`;
+
+    // Set the OpenAI API parameters
+    const parameters: CreateChatCompletionRequest = {
+      model: this.model,
+      messages: [
+        {
+          role: "user",
+          content: prompt,
+        },
+      ],
+      temperature: 0.7,
+      max_tokens: 500,
+      n: 1,
+    };
+
+    // Call the OpenAI API
+    const response = await this.openai.createChatCompletion(parameters);
+
+    // Get the generated day plan from the response
+    const generatedDayPlan = response.data.choices[0].message?.content.trim();
+
+    if (!generatedDayPlan) {
+      console.log("ERROR: No day plan generated");
+      return [];
+    }
+
+    // Use regex to parse the generated day plan and convert it into an array of objects
+    const regex = /\[(\d+),(\d+)\]\s+(.+)/g;
+    let match;
+    const dayPlan: {
+      start: number;
+      end: number;
+      description: string;
+    }[] = [];
+
+    while ((match = regex.exec(generatedDayPlan)) !== null) {
+      dayPlan.push({
+        start: parseInt(match[1]),
+        end: parseInt(match[2]),
+        description: match[3].trim(),
+      });
+    }
+
+    return dayPlan;
+  }
+
+  async decomposePlanItem(
+    name: string,
+    age: number,
+    personality: AgentPersonality,
+    planItems: {
+      start: number;
+      end: number;
+      description: string;
+    }[],
+    index: number
+  ): Promise<
+    {
+      start: number;
+      end: number;
+      description: string;
+    }[]
+  > {
+    const planItem = planItems[index];
+
+    const prompt = `
+    Here is a description of ${name}, aged ${age} \n
+    Background: ${personality.background}
+    Innate Tendencies: ${personality.innateTendency.join(", ")}
+    Learned Tendencies: ${personality.learnedTendency.join(", ")}
+    Current Goal: ${personality.currentGoal}
+    Lifestyle: ${personality.lifestyle}
+    Values: ${personality.values.join(", ")}
+    
+    
+    In their typical day, they have following planned item:
+    [${planItem.start},${planItem.end}] ${planItem.description}
+
+Please decompose it into smaller, more detailed activities. Example in the following format:
+[800,830] sub task 1
+[830,850] Sub task 2
+...
+[900,1000] last sub task
+
+VERY IMPORTANT -
+1. If it doesn't make sense to decompose the activity, please return the original activity. Example -
+[800,1000] Wake up and get ready for the day.
+2. Do not breakdown into more than 4 sub tasks.
+3. The start and end time of the sub-tasks should be within the start and end time of the original activity.
+4. These sub-tasks should not conflict with other planned activities. Find the list of all planned activities below -
+${planItems
+  .map(
+    (item, i) =>
+      `[${item.start},${item.end}] ${item.description} ${
+        i === index ? "<--" : ""
+      } `
+  )
+  .join("\n")}
+`;
+
+    // Set the OpenAI API parameters
+    const parameters: CreateChatCompletionRequest = {
+      model: "gpt-4",
+      messages: [
+        {
+          role: "user",
+          content: prompt,
+        },
+      ],
+      temperature: 0.7,
+      max_tokens: 700,
+      n: 1,
+    };
+
+    // Call the OpenAI API
+    const response = await this.openai.createChatCompletion(parameters);
+
+    // Get the generated detailed plan from the response
+    const generatedDetailedPlan =
+      response.data.choices[0].message?.content.trim();
+
+    if (!generatedDetailedPlan) {
+      console.log("ERROR: No detailed plan generated");
+      return [];
+    }
+
+    // Use regex to parse the generated detailed plan and convert it into an array of objects
+    const regex = /\[(\d+),(\d+)\]\s+(.+)/g;
+    let match;
+    const detailedPlan: {
+      start: number;
+      end: number;
+      description: string;
+    }[] = [];
+
+    while ((match = regex.exec(generatedDetailedPlan)) !== null) {
+      detailedPlan.push({
+        start: parseInt(match[1]),
+        end: parseInt(match[2]),
+        description: match[3].trim(),
+      });
+    }
+
+    return detailedPlan;
   }
 }
