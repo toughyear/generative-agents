@@ -1,19 +1,30 @@
-import React from "react";
+import React, { useEffect, useState, useRef } from "react";
 import "./App.css";
 import PhaserGame from "./phaserGame";
 import { Agent, AgentEngine } from "generative-agents";
+import { Memory } from "generative-agents/dist/types";
+import samplePlan from "./samplePlan.json";
+import AgentDisplay from "./AgentDisplay";
 
 function App() {
-  const ae = new AgentEngine(process.env.REACT_APP_OPENAI_API_KEY ?? "");
+  const ae = useRef(
+    new AgentEngine(process.env.REACT_APP_OPENAI_API_KEY ?? "")
+  ).current;
 
-  const agent = new Agent(ae, "id_1", "Buri Buri Zaemon", 24, {
-    background: "A Samurai",
-    currentGoal: "slay the dragon",
-    innateTendency: ["brave", "rude", "lonewolf"],
-    learnedTendency: ["swordsmanship", "archery", "fishing"],
-    lifestyle: "wanders around the forest of Tsurugi",
-    values: ["honor", "loyalty", "justice"],
-  });
+  const agent = useRef(
+    new Agent(ae, "id_1", "Buri Buri Zaemon", 24, {
+      background: "A Samurai",
+      currentGoal: "slay the dragon",
+      innateTendency: ["brave", "rude", "lonewolf"],
+      learnedTendency: ["swordsmanship", "archery", "fishing"],
+      lifestyle: "wanders around the forest of Tsurugi",
+      values: ["honor", "loyalty", "justice"],
+    })
+  ).current;
+
+  const [plans, setPlans] = useState<Memory[]>([]);
+
+  const [plan, setPlan] = useState<Memory>();
 
   console.log("agent", agent);
   const handleObservation = async () => {
@@ -97,39 +108,63 @@ Rajiv Patel Abigail Chen is experimenting with new tools and techniques to creat
   };
 
   const createPlan = async () => {
+    setPlans(samplePlan as unknown as Memory[]);
+
     await agent.createPlan();
 
-    console.log("agent", agent);
+    console.log("plan", agent);
+
+    const plans = agent.memoryStream.filter((m) => m.type === "PLAN");
+    setPlans(plans);
   };
 
+  // Replace the useState line for currentPlanIndex with useRef
+  const currentPlanIndex = useRef(0);
+
+  // Update the useEffect
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (plans.length > 0) {
+        const nextPlan = plans[currentPlanIndex.current % plans.length];
+        console.log("next plan", nextPlan);
+        setPlan(nextPlan);
+        currentPlanIndex.current += 1;
+      }
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [plans]);
+
   return (
-    <div className='p-5 overflow-scroll'>
+    <div className='p-5 overflow-scroll bg-gray-50'>
       <button
-        className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+        className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2'
         onClick={handleObservation}
       >
         Add observation to memory
       </button>
       <button
-        className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+        className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2'
         onClick={handleSalientQuestions}
       >
         get salient questions
       </button>
       <button
-        className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+        className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2'
         onClick={handleDaySchedule}
       >
         get day schedule
       </button>
       <button
-        className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+        className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2'
         onClick={createPlan}
       >
         create a plan
       </button>
-
-      <PhaserGame />
+      <p>current plan: {plan?.description ?? "Creating plan 🔨"}</p>
+      <PhaserGame
+        emoji={plan?.description.split("|")[1].replace(/ /g, "") ?? "👀"}
+      />
+      <AgentDisplay agent={agent} />
     </div>
   );
 }

@@ -276,17 +276,18 @@ What would ${name}'s day look like? Write in the following format:
     [${planItem.start},${planItem.end}] ${planItem.description}
 
 Please decompose it into smaller, more detailed activities. Example in the following format:
-[800,830] sub task 1
-[830,850] Sub task 2
+[800,830] sub task 1 | 😴💤
+[830,850] Sub task 2 | 🍽️🍞
 ...
 [900,1000] last sub task
 
 VERY IMPORTANT -
 1. If it doesn't make sense to decompose the activity, please return the original activity. Example -
-[800,1000] Wake up and get ready for the day.
+[800,1000] Wake up and get ready for the day | 😴💤
 2. Do not breakdown into more than 4 sub tasks.
 3. The start and end time of the sub-tasks should be within the start and end time of the original activity.
-4. These sub-tasks should not conflict with other planned activities. Find the list of all planned activities below -
+4. Always end with emojis describing the task. Min 1 max 3.
+5. These sub-tasks should not conflict with other planned activities. Find the list of all planned activities below -
 ${planItems
   .map(
     (item, i) =>
