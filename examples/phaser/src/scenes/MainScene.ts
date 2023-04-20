@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import AgentCharacter from "../phaserClasses/AgentCharacter";
-import { agentsData } from "../data/agents";
+import { AgentInitData, agentsData } from "../data/agents";
 
 export class MainScene extends Phaser.Scene {
   private cameraScrollSpeed = 8;
@@ -49,7 +49,10 @@ export class MainScene extends Phaser.Scene {
     this.setupZoom();
     this.setupKeyboard();
 
-    this.addCharacter(100, 200);
+    // add characters
+    agentsData.forEach((agent) => {
+      this.addCharacter(agent, 100, 100);
+    });
   }
 
   update() {
@@ -61,8 +64,8 @@ export class MainScene extends Phaser.Scene {
     console.log("Emoji changed to: ", emoji);
   }
 
-  addCharacter(x: number, y: number) {
-    const newCharacter = new AgentCharacter(this, x, y, agentsData[7]);
+  addCharacter(agent: AgentInitData, x: number, y: number) {
+    const newCharacter = new AgentCharacter(this, x, y, agent);
     newCharacter.setScale(2);
     this.characters.push(newCharacter);
   }

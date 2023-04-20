@@ -26,14 +26,14 @@ class AgentCharacter extends Phaser.GameObjects.Sprite {
     const anims = this.scene.anims;
 
     anims.create({
-      key: "idle",
+      key: `${this.agent.id}_idle`,
       frames: anims.generateFrameNumbers(this.agent.id, { start: 48, end: 53 }),
       frameRate: 6,
       repeat: -1,
     });
 
     anims.create({
-      key: "walk_down",
+      key: `${this.agent.id}_walk_down`,
       frames: anims.generateFrameNumbers(this.agent.id, {
         start: 132,
         end: 137,
@@ -43,7 +43,7 @@ class AgentCharacter extends Phaser.GameObjects.Sprite {
     });
 
     anims.create({
-      key: "walk_up",
+      key: `${this.agent.id}_walk_up`,
       frames: anims.generateFrameNumbers(this.agent.id, {
         start: 122,
         end: 127,
@@ -53,7 +53,7 @@ class AgentCharacter extends Phaser.GameObjects.Sprite {
     });
 
     anims.create({
-      key: "walk_left",
+      key: `${this.agent.id}_walk_left`,
       frames: anims.generateFrameNumbers(this.agent.id, {
         start: 127,
         end: 132,
@@ -63,7 +63,7 @@ class AgentCharacter extends Phaser.GameObjects.Sprite {
     });
 
     anims.create({
-      key: "walk_right",
+      key: `${this.agent.id}_walk_right`,
       frames: anims.generateFrameNumbers(this.agent.id, {
         start: 116,
         end: 121,
@@ -84,19 +84,19 @@ class AgentCharacter extends Phaser.GameObjects.Sprite {
     switch (this.currentDirection) {
       case "up":
         this.y -= 0.8;
-        this.anims.play("walk_up", true);
+        this.anims.play(`${this.agent.id}_walk_up`, true);
         break;
       case "down":
         this.y += 0.8;
-        this.anims.play("walk_down", true);
+        this.anims.play(`${this.agent.id}_walk_down`, true);
         break;
       case "left":
         this.x -= 0.8;
-        this.anims.play("walk_left", true);
+        this.anims.play(`${this.agent.id}_walk_left`, true);
         break;
       case "right":
         this.x += 0.8;
-        this.anims.play("walk_right", true);
+        this.anims.play(`${this.agent.id}_walk_right`, true);
         break;
     }
 
