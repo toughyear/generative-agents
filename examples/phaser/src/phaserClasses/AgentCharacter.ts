@@ -1,16 +1,22 @@
 import Phaser from "phaser";
 import BubbleText from "./BubbleText";
-import { AgentInitData } from "../data/agents";
+import { Agent } from "generative-agents";
 
 class AgentCharacter extends Phaser.GameObjects.Sprite {
-  private agent: AgentInitData;
+  private agent: Agent;
 
   private directionChangeCounter = 0;
   private currentDirection = "right";
   private bubbleText: BubbleText;
 
-  constructor(scene: Phaser.Scene, x: number, y: number, agent: AgentInitData) {
-    super(scene, x, y, agent.sprite);
+  constructor(
+    scene: Phaser.Scene,
+    agent: Agent,
+    sprite: string,
+    x: number,
+    y: number
+  ) {
+    super(scene, x, y, sprite);
     this.agent = agent;
     scene.add.existing(this);
     this.createAnimations();
@@ -103,6 +109,11 @@ class AgentCharacter extends Phaser.GameObjects.Sprite {
     // Update the bubble text position
     this.bubbleText.x = this.x + 10;
     this.bubbleText.y = this.y - 50;
+
+    // update the bubble text content
+    this.bubbleText.updateText(
+      `${this.getAgentInitials()}: ${this.agent.action.emoji}`
+    );
   }
 
   // Add a method to update the bubble text content

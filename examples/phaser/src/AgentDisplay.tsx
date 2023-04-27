@@ -1,29 +1,6 @@
 // AgentDisplay.tsx
+import { Agent } from "generative-agents";
 import React from "react";
-
-export type AgentPersonality = {
-  background: string;
-  innateTendency: string[];
-  learnedTendency: string[];
-  currentGoal: string;
-  lifestyle: string;
-  values: string[];
-};
-
-export type AgentSettings = {
-  visualRange: number;
-  attention: number;
-  retention: number;
-};
-
-export type Agent = {
-  id: string;
-  name: string;
-  age: number;
-  personality: AgentPersonality;
-  settings: AgentSettings;
-  latestPlanIteration: number;
-};
 
 type AgentDisplayProps = {
   agent: Agent | undefined;
@@ -36,7 +13,9 @@ const AgentDisplay: React.FC<AgentDisplayProps> = ({ agent }) => {
 
   return (
     <div className='p-4 shadow-lg bg-white rounded-lg mt-5'>
-      <h2 className='text-xl font-bold mb-2'>Agent Details</h2>
+      <h2 className='text-xl font-bold mb-2'>
+        Agent Details: {agent.action.status}
+      </h2>
       <div className='grid grid-cols-2 gap-4'>
         <div>
           <p>

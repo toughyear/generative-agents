@@ -10,6 +10,7 @@ import {
   Plan,
   Reflection,
 } from "./types";
+import sampleAgentPlan from "./samplePlan.json";
 
 export class Agent {
   engine: AgentEngine;
@@ -70,7 +71,7 @@ export class Agent {
     this.importanceScoreSumSinceLastPurge = 0;
     this.action = {
       status: "sleeping",
-      emoji: ["😴"],
+      emoji: "😴",
     };
     this.world = world;
     this.location = location;
@@ -161,8 +162,22 @@ export class Agent {
     this.importanceScoreSumSinceLastPurge = 0;
   };
 
-  async createPlan(): Promise<void> {
+  async createPlan(testing = false): Promise<void> {
     try {
+      if (testing) {
+        // Read from local JSON file
+        this.memoryStream.push(...(sampleAgentPlan as Plan[]));
+        this.memoryCount.plan += sampleAgentPlan.length;
+
+        // update latest plan iteration
+        this.latestPlanIteration += 1;
+        // Execute the new plan
+        await this.executePlan();
+
+        return;
+      }
+
+      // API requests
       const dayPlan = await this.engine.getDayPlan(
         this.name,
         this.age,
@@ -217,8 +232,38 @@ export class Agent {
 
       // update latest plan iteration
       this.latestPlanIteration += 1;
+      // Execute the new plan
+      await this.executePlan();
     } catch (error) {
       console.error("Error creating plan:", error);
     }
   }
+
+  executePlan = async () => {
+    // Check if the agent has a plan
+    const currentPlans = this.memoryStream.filter(
+      (memory) =>
+        memory.type === MemoryType.PLAN &&
+        (memory as Plan).iteration === this.latestPlanIteration
+    ) as Plan[];
+
+    if (currentPlans.length === 0) {
+      console.log("No plan found for the agent.");
+      return;
+    }
+
+    // Execute the plan
+    for (const plan of currentPlans) {
+      this.action = {
+        status: plan.description,
+        emoji: plan.description.split("|")[1].replace(" ", ""),
+      };
+
+      const planDuration = plan.end - plan.start;
+
+      console.log(`Executing plan: ${plan.description} for ${planDuration}s`);
+
+      await new Promise((resolve) => setTimeout(resolve, planDuration * 1000));
+    }
+  };
 }

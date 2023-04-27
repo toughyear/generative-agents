@@ -1,26 +1,30 @@
 import Phaser from "phaser";
+import { Agent } from "generative-agents";
 import AgentCharacter from "../phaserClasses/AgentCharacter";
-import { AgentInitData, agentsData } from "../data/agents";
+import { agentsData } from "../data/agents";
 
 export class MainScene extends Phaser.Scene {
-  private cameraScrollSpeed = 8;
+  public agents: Agent[] = [];
 
+  // for displaying agents on screen
+  private cameraScrollSpeed = 8;
   private keyW: Phaser.Input.Keyboard.Key | null = null;
   private keyA: Phaser.Input.Keyboard.Key | null = null;
   private keyS: Phaser.Input.Keyboard.Key | null = null;
   private keyD: Phaser.Input.Keyboard.Key | null = null;
-
   private characters: AgentCharacter[] = [];
 
-  constructor() {
+  constructor(agents: Agent[]) {
     super({ key: "MainScene" });
+    this.agents = agents;
   }
 
   preload() {
     this.load.image("background", "./images/background.png");
 
-    // for all characters, load their spritesheets
+    // for all agents, load their character spritesheets
     agentsData.forEach((agent) => {
+      // load spritesheet
       this.load.spritesheet(agent.id, agent.sprite, {
         frameWidth: 16,
         frameHeight: 32,
@@ -49,9 +53,10 @@ export class MainScene extends Phaser.Scene {
     this.setupZoom();
     this.setupKeyboard();
 
-    // add characters
-    agentsData.forEach((agent) => {
-      this.addCharacter(agent, 100, 100);
+    // populate plans for all agents
+    this.agents.forEach((agent, index) => {
+      agent.createPlan(true);
+      this.addCharacter(agent, agentsData[index].sprite, 100, 100);
     });
   }
 
@@ -64,8 +69,8 @@ export class MainScene extends Phaser.Scene {
     console.log("Emoji changed to: ", emoji);
   }
 
-  addCharacter(agent: AgentInitData, x: number, y: number) {
-    const newCharacter = new AgentCharacter(this, x, y, agent);
+  addCharacter(agent: Agent, sprite: string, x: number, y: number) {
+    const newCharacter = new AgentCharacter(this, agent, sprite, x, y);
     newCharacter.setScale(2);
     this.characters.push(newCharacter);
   }

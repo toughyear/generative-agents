@@ -1,12 +1,13 @@
 import React, { useEffect, useRef } from "react";
 import Phaser from "phaser";
 import { MainScene } from "./scenes/MainScene";
+import { Agent } from "generative-agents";
 
 interface Props {
-  emoji: string;
+  agents: Agent[];
 }
 
-const PhaserGame: React.FC<Props> = ({ emoji }) => {
+const PhaserGame: React.FC<Props> = (props) => {
   const gameRef = useRef<HTMLDivElement>(null);
   const phaserGameRef = useRef<Phaser.Game | null>(null);
 
@@ -19,7 +20,7 @@ const PhaserGame: React.FC<Props> = ({ emoji }) => {
       height: 480 * 1.5,
       backgroundColor: "#FEEFC4",
       parent: gameRef.current,
-      scene: [MainScene],
+      scene: [new MainScene(props.agents)],
       pixelArt: true,
     };
 
@@ -29,14 +30,6 @@ const PhaserGame: React.FC<Props> = ({ emoji }) => {
       phaserGameRef.current?.destroy(true);
     };
   }, []);
-
-  useEffect(() => {
-    if (!phaserGameRef.current) return;
-    const game = phaserGameRef.current;
-
-    const scene = game.scene.getScene("MainScene") as MainScene;
-    scene?.updateEmoji(emoji);
-  }, [emoji]);
 
   return <div ref={gameRef} className='flex justify-center mt-10'></div>;
 };

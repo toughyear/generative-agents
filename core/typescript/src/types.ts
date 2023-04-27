@@ -15,7 +15,7 @@ export type AgentSettings = {
 
 export type Action = {
   status: string;
-  emoji: string[];
+  emoji: string;
 };
 
 export enum MemoryType {
