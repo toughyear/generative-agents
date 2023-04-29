@@ -3,6 +3,7 @@ export interface AgentInitData {
   sprite: string;
   name: string;
   age: number;
+  startLocation: string;
   background: string;
   currentGoal: string;
   innateTendency: string[];
@@ -17,6 +18,7 @@ export const agentsData: AgentInitData[] = [
     sprite: "characters/male_1.png",
     name: "Thomas Miller",
     age: 42,
+    startLocation: "thomas_miller_bed",
     background: "Father of 2, works as a software engineer.",
     currentGoal: "To get a promotion at work.",
     innateTendency: ["Curious", "Adventurous", "Optimistic"],
@@ -30,6 +32,7 @@ export const agentsData: AgentInitData[] = [
     sprite: "characters/female_1.png",
     name: "Susan Miller",
     age: 40,
+    startLocation: "susan_miller_bed",
     background: "Mother of 2, runs the Taiki seafood restaurant.",
     currentGoal: "To expand the restaurant's menu and attract more customers.",
     innateTendency: ["Creative", "Ambitious", "Friendly"],
@@ -43,6 +46,7 @@ export const agentsData: AgentInitData[] = [
     sprite: "characters/female_2.png",
     name: "Lucy Miller",
     age: 16,
+    startLocation: "lucy_miller_bed",
     background:
       "High school student, helps out at the restaurant after school.",
     currentGoal: "To get accepted into a top college.",
@@ -57,6 +61,7 @@ export const agentsData: AgentInitData[] = [
     sprite: "characters/male_2.png",
     name: "Michael Miller",
     age: 14,
+    startLocation: "mike_miller_bed",
     background: "Middle school student, enjoys playing video games.",
     currentGoal: "To win a regional gaming competition.",
     innateTendency: ["Competitive", "Imaginative", "Lighthearted"],
@@ -69,6 +74,7 @@ export const agentsData: AgentInitData[] = [
     sprite: "characters/male_3.png",
     name: "James Johnson",
     age: 45,
+    startLocation: "james_johnson_bed",
     background: "Father of 2, owns and manages the Maven Cafe.",
     currentGoal: "To create a popular event series at the cafe.",
     innateTendency: ["Social", "Visionary", "Generous"],
@@ -82,6 +88,7 @@ export const agentsData: AgentInitData[] = [
     sprite: "characters/female_3.png",
     name: "Linda Johnson",
     age: 43,
+    startLocation: "linda_johnson_bed",
     background: "Mother of 2, helps manage the Maven Cafe.",
     currentGoal: "To create a community art exhibition at the cafe.",
     innateTendency: ["Creative", "Ambitious", "Friendly"],
@@ -94,6 +101,7 @@ export const agentsData: AgentInitData[] = [
     sprite: "characters/male_4.png",
     name: "Henry Johnson",
     age: 18,
+    startLocation: "henry_johnson_bed",
     background:
       "College-bound student, occasionally helps out at the Maven Cafe.",
     currentGoal:
@@ -105,10 +113,11 @@ export const agentsData: AgentInitData[] = [
     values: ["Education", "Personal Growth", "Family"],
   },
   {
-    id: "charlotte_johnson",
+    id: "nicole_johnson",
     sprite: "characters/female_4.png",
-    name: "Charlotte Johnson",
+    name: "Nicole Johnson",
     age: 21,
+    startLocation: "nicole_johnson_bed",
     background:
       "Avid outdoorswoman, leads guided tours and hikes in the Tsurugi forest.",
     currentGoal: "To start her own adventure tourism business.",

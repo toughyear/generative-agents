@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import { Agent } from "generative-agents";
 import AgentCharacter from "../phaserClasses/AgentCharacter";
 import { agentsData } from "../data/agents";
+import { locations } from "../data/world";
 
 export class MainScene extends Phaser.Scene {
   public agents: Agent[] = [];
@@ -56,7 +57,15 @@ export class MainScene extends Phaser.Scene {
     // populate plans for all agents
     this.agents.forEach((agent, index) => {
       agent.createPlan(true);
-      this.addCharacter(agent, agentsData[index].sprite, 100, 100);
+      const startLocation = locations.find(
+        (location) => location.name === agent.location[0]
+      );
+      this.addCharacter(
+        agent,
+        agentsData[index].sprite,
+        startLocation?.x ?? 0,
+        startLocation?.y ?? 0
+      );
     });
   }
 

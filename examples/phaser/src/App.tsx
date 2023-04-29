@@ -1,20 +1,32 @@
 import React, { useRef } from "react";
 import "./App.css";
 import PhaserGame from "./phaserGame";
-import { Agent, AgentEngine } from "generative-agents";
+import { Agent, AgentEngine, buildSpatialWorld } from "generative-agents";
 
 import { agentsData } from "./data/agents";
 import AgentDisplay from "./AgentDisplay";
+import { locations } from "./data/world";
 
 function App() {
   const engine = useRef(
     new AgentEngine(process.env.REACT_APP_OPENAI_API_KEY ?? "")
   ).current;
 
+  const world = buildSpatialWorld(locations);
+
   const agents: Agent[] = useRef(
     agentsData.map(
       (agent) =>
-        new Agent(engine, agent.id, agent.name, agent.age, { ...agent })
+        new Agent(
+          engine,
+          agent.id,
+          agent.name,
+          agent.age,
+          { ...agent },
+          undefined,
+          world,
+          [agent.startLocation]
+        )
     )
   ).current;
 

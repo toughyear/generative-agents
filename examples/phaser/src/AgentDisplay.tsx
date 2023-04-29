@@ -28,6 +28,9 @@ const AgentDisplay: React.FC<AgentDisplayProps> = ({ agent }) => {
             <strong>Age:</strong> {agent.age}
           </p>
           <p>
+            <strong>Currently at:</strong> {agent.location.join(":")}
+          </p>
+          <p>
             <strong>Latest Plan Iteration:</strong> {agent.latestPlanIteration}
           </p>
         </div>

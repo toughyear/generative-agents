@@ -1,12 +1,6 @@
-export interface Location {
-  name: string;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-}
+import { Rectangle } from "generative-agents";
 
-export const locations: Location[] = [
+export const locations: Rectangle[] = [
   {
     x: 2119,
     y: 136,
