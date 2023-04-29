@@ -18,6 +18,10 @@ export type Action = {
   emoji: string;
 };
 
+export interface World {
+  [key: string]: World | number;
+}
+
 export enum MemoryType {
   OBSERVATION = "OBSERVATION",
   REFLECTION = "REFLECTION",

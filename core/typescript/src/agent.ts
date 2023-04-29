@@ -1,5 +1,5 @@
 import { AgentEngine } from "./engine";
-import { dateToString } from "./helpers";
+import { dateToString } from "./formatters";
 import {
   Action,
   AgentPersonality,
@@ -9,6 +9,7 @@ import {
   Observation,
   Plan,
   Reflection,
+  World,
 } from "./types";
 import sampleAgentPlan from "./samplePlan.json";
 
@@ -37,7 +38,7 @@ export class Agent {
 
   action: Action;
 
-  world: object;
+  world: World;
   location: string[];
 
   constructor(
@@ -51,7 +52,7 @@ export class Agent {
       retention: 8,
       visualRange: 8,
     },
-    world: object = {},
+    world: World = {},
     location: string[] = []
   ) {
     this.engine = engine;

@@ -1,5 +1,5 @@
 import { Configuration, CreateChatCompletionRequest, OpenAIApi } from "openai";
-import { cosineSimilarity } from "./helpers";
+import { cosineSimilarity } from "./maths";
 import { AgentPersonality } from "./types";
 
 /**
