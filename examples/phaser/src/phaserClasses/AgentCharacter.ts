@@ -1,12 +1,11 @@
 import Phaser from "phaser";
 import BubbleText from "./BubbleText";
 import { Agent } from "generative-agents";
+import { locations } from "../data/world";
 
 class AgentCharacter extends Phaser.GameObjects.Sprite {
   private agent: Agent;
 
-  private directionChangeCounter = 0;
-  private currentDirection = "right";
   private bubbleText: BubbleText;
 
   constructor(
@@ -33,7 +32,7 @@ class AgentCharacter extends Phaser.GameObjects.Sprite {
 
     anims.create({
       key: `${this.agent.id}_idle`,
-      frames: anims.generateFrameNumbers(this.agent.id, { start: 48, end: 53 }),
+      frames: anims.generateFrameNumbers(this.agent.id, { start: 75, end: 80 }),
       frameRate: 6,
       repeat: -1,
     });
@@ -80,14 +79,67 @@ class AgentCharacter extends Phaser.GameObjects.Sprite {
   }
 
   update() {
-    this.directionChangeCounter++;
+    this.updateAgentLocation();
 
-    if (this.directionChangeCounter >= 60) {
-      this.currentDirection = this.randomDirection();
-      this.directionChangeCounter = 0;
+    // Update the bubble text position
+    this.bubbleText.x = this.x + 10;
+    this.bubbleText.y = this.y - 50;
+
+    // update the bubble text content
+    this.bubbleText.updateText(
+      `${this.getAgentInitials()}: ${this.agent.action.emoji}`
+    );
+  }
+
+  // Add a method to update the bubble text content
+  updateBubbleText(text: string) {
+    this.bubbleText.updateText(text);
+  }
+
+  getAgentInitials() {
+    return this.agent.id
+      .split("_")
+      .map((word) => word[0])
+      .join("")
+      .toUpperCase();
+  }
+
+  updateAgentLocation() {
+    const targetLocation = locations.find(
+      (location) => location.name === this.agent.location
+    );
+
+    if (!targetLocation) {
+      this.anims.play(`${this.agent.id}_idle`, true);
+      return;
     }
 
-    switch (this.currentDirection) {
+    const targetX = targetLocation.x + targetLocation.width / 2;
+    const targetY = targetLocation.y + targetLocation.height / 2;
+
+    const tolerance = 2; // Tolerance value to determine if the agent is close enough to the target position
+
+    if (
+      Math.abs(this.x - targetX) > tolerance ||
+      Math.abs(this.y - targetY) > tolerance
+    ) {
+      // Move vertically first
+      if (Math.abs(this.y - targetY) > tolerance) {
+        const verticalDirection = this.y < targetY ? "down" : "up";
+        this.moveCharacter(verticalDirection);
+      }
+      // Move horizontally after reaching the target Y position
+      else {
+        const horizontalDirection = this.x < targetX ? "right" : "left";
+        this.moveCharacter(horizontalDirection);
+      }
+    } else {
+      this.anims.play(`${this.agent.id}_idle`, true);
+    }
+  }
+
+  moveCharacter(direction: string) {
+    switch (direction) {
       case "up":
         this.y -= 0.8;
         this.anims.play(`${this.agent.id}_walk_up`, true);
@@ -105,33 +157,6 @@ class AgentCharacter extends Phaser.GameObjects.Sprite {
         this.anims.play(`${this.agent.id}_walk_right`, true);
         break;
     }
-
-    // Update the bubble text position
-    this.bubbleText.x = this.x + 10;
-    this.bubbleText.y = this.y - 50;
-
-    // update the bubble text content
-    this.bubbleText.updateText(
-      `${this.getAgentInitials()}: ${this.agent.action.emoji}`
-    );
-  }
-
-  // Add a method to update the bubble text content
-  updateBubbleText(text: string) {
-    this.bubbleText.updateText(text);
-  }
-
-  private randomDirection() {
-    const directions = ["up", "down", "left", "right"];
-    return directions[Math.floor(Math.random() * directions.length)];
-  }
-
-  private getAgentInitials() {
-    return this.agent.id
-      .split("_")
-      .map((word) => word[0])
-      .join("")
-      .toUpperCase();
   }
 }
 

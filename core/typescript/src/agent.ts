@@ -39,7 +39,7 @@ export class Agent {
   action: Action;
 
   world: World;
-  location: string[];
+  location: string;
 
   constructor(
     engine: AgentEngine,
@@ -53,7 +53,7 @@ export class Agent {
       visualRange: 8,
     },
     world: World = {},
-    location: string[] = []
+    location: string = ""
   ) {
     this.engine = engine;
     this.id = id;
@@ -255,14 +255,31 @@ export class Agent {
 
     // Execute the plan
     for (const plan of currentPlans) {
+      // update action
       this.action = {
         status: plan.description,
         emoji: plan.description.split("|")[1].replace(" ", ""),
       };
 
+      // update location
+      const newLocation = await this.engine.findPreferredLocation(
+        this.world,
+        plan.description,
+        this.location,
+        `${this.name}, ${this.age}, ${this.personality.background}, ${this.personality.currentGoal}`
+      );
+
+      console.log(`Agent ${this.name} should go to ${newLocation}`);
+
+      if (newLocation) {
+        this.location = newLocation;
+      }
+
       const planDuration = plan.end - plan.start;
 
-      console.log(`Executing plan: ${plan.description} for ${planDuration}s`);
+      console.log(
+        `Agent ${this.name} is executing plan: ${plan.description} for ${planDuration}s`
+      );
 
       await new Promise((resolve) => setTimeout(resolve, planDuration * 1000));
     }

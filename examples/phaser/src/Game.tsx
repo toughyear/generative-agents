@@ -28,7 +28,7 @@ function Game(props: Props) {
           { ...agent },
           undefined,
           world,
-          [agent.startLocation]
+          agent.startLocation
         )
     )
   ).current;
@@ -36,7 +36,7 @@ function Game(props: Props) {
   return (
     <div className='p-5 overflow-scroll bg-gray-50'>
       <AgentDisplay agent={agents[0]} />
-      <PhaserGame agents={agents} />
+      <PhaserGame agents={agents.slice(0, 1)} />
     </div>
   );
 }

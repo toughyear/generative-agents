@@ -1,3 +1,5 @@
+import { World } from "./types";
+
 export const dateToString = (date: Date) => {
   // format 2023-04-15 5:44:20 PM
   const formattedDate = date.toISOString().split("T")[0];
@@ -26,3 +28,21 @@ export const stringToDate = (dateString: string) => {
     Number(second)
   );
 };
+
+export function getAllKeys(world: World): string[] {
+  const keys: string[] = [];
+
+  function traverse(obj: World) {
+    for (const key in obj) {
+      if (typeof obj[key] === "number") {
+        keys.push(key);
+      } else {
+        traverse(obj[key] as World);
+      }
+    }
+  }
+
+  traverse(world);
+
+  return keys;
+}

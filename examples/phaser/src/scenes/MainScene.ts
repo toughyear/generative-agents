@@ -4,6 +4,13 @@ import AgentCharacter from "../phaserClasses/AgentCharacter";
 import { agentsData } from "../data/agents";
 import { locations } from "../data/world";
 
+// declare the custom type for the window object
+declare global {
+  interface Window {
+    scene: Phaser.Scene;
+  }
+}
+
 export class MainScene extends Phaser.Scene {
   public agents: Agent[] = [];
 
@@ -18,6 +25,7 @@ export class MainScene extends Phaser.Scene {
   constructor(agents: Agent[]) {
     super({ key: "MainScene" });
     this.agents = agents;
+    window.scene = this; // attach the scene to the global window object
   }
 
   preload() {
@@ -58,7 +66,7 @@ export class MainScene extends Phaser.Scene {
     this.agents.forEach((agent, index) => {
       agent.createPlan(true);
       const startLocation = locations.find(
-        (location) => location.name === agent.location[0]
+        (location) => location.name === agent.location
       );
       this.addCharacter(
         agent,

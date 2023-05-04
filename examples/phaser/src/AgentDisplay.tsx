@@ -1,12 +1,21 @@
 // AgentDisplay.tsx
 import { Agent } from "generative-agents";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 type AgentDisplayProps = {
   agent: Agent | undefined;
 };
 
 const AgentDisplay: React.FC<AgentDisplayProps> = ({ agent }) => {
+  // should re-render every 1 second
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCount(count + 1);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [count]);
+
   if (!agent) {
     return null;
   }
@@ -28,7 +37,7 @@ const AgentDisplay: React.FC<AgentDisplayProps> = ({ agent }) => {
             <strong>Age:</strong> {agent.age}
           </p>
           <p>
-            <strong>Currently at:</strong> {agent.location.join(":")}
+            <strong>Currently at:</strong> {agent.location}
           </p>
           <p>
             <strong>Latest Plan Iteration:</strong> {agent.latestPlanIteration}

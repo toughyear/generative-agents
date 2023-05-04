@@ -1,6 +1,7 @@
 import { Configuration, CreateChatCompletionRequest, OpenAIApi } from "openai";
 import { cosineSimilarity } from "./maths";
-import { AgentPersonality } from "./types";
+import { AgentPersonality, World } from "./types";
+import { getAllKeys } from "./formatters";
 
 /**
  * returns a engine instance that manages agents and their inference requirements
@@ -9,7 +10,7 @@ export class AgentEngine {
   openai: OpenAIApi;
   model: string;
 
-  constructor(apiKey: string, model: string = "gpt-3.5-turbo") {
+  constructor(apiKey: string, model: string = "gpt-4") {
     const configuration = new Configuration({
       apiKey,
     });
@@ -300,7 +301,7 @@ ${planItems
 
     // Set the OpenAI API parameters
     const parameters: CreateChatCompletionRequest = {
-      model: "gpt-4",
+      model: this.model,
       messages: [
         {
           role: "user",
@@ -342,5 +343,65 @@ ${planItems
     }
 
     return detailedPlan;
+  }
+
+  async findPreferredLocation(
+    world: World,
+    taskDescription: string,
+    currentLocation: string,
+    agentDescription: string
+  ): Promise<string> {
+    // Construct the prompt for the OpenAI API
+    const prompt = `
+      We have a game world in which an agent exists. 
+      We need to predict the preferred location of the agent while performing some activity. 
+      Below is all the details you will require to predict the preferred location of the agent.
+      
+      TASK_DESCRIPTION: ${taskDescription}
+      CURRENT_LOCATION: ${currentLocation}
+      AGENT_DESCRIPTION: ${agentDescription}
+      WORLD: ${getAllKeys(world).join(", ")}
+
+
+      find a place in the world where the agent would prefer to be while performing the task described above.
+      Reply in following format:
+      PREFERRED_LOCATION: <location>
+    `;
+
+    // Set the OpenAI API parameters
+    const parameters: CreateChatCompletionRequest = {
+      model: this.model,
+      messages: [
+        {
+          role: "user",
+          content: prompt,
+        },
+      ],
+      temperature: 0.7,
+      max_tokens: 100,
+      n: 1,
+    };
+
+    // Call the OpenAI API
+    const response = await this.openai.createChatCompletion(parameters);
+
+    // Get the generated preferred location from the response
+    const prediction = response.data.choices[0].message?.content.trim();
+
+    if (!prediction) {
+      console.log("ERROR: No preferred location generated");
+      return currentLocation; // return the current location if no preferred location generated
+    }
+
+    const regex = /PREFERRED_LOCATION:\s+(.+)/g;
+
+    const match = regex.exec(prediction);
+
+    if (!match) {
+      console.log("ERROR: No preferred location generated");
+      return currentLocation; // return the current location if no preferred location generated
+    }
+
+    return match[1];
   }
 }
