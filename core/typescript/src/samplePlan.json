@@ -319,7 +319,7 @@
     "importance": 2,
     "latestAccess": "2023-05-04 2:48:13 PM",
     "granularity": "HOUR",
-    "iteration": 1,
+    "executed": false,
     "parent": "Get out of bed and stretch | 😴💤"
   },
   {
@@ -642,7 +642,7 @@
     "importance": 2,
     "latestAccess": "2023-05-04 2:48:13 PM",
     "granularity": "HOUR",
-    "iteration": 1,
+    "executed": false,
     "parent": "Brush teeth and wash face | 🚰😁"
   },
   {
@@ -965,7 +965,7 @@
     "importance": 2,
     "latestAccess": "2023-05-04 2:48:13 PM",
     "granularity": "HOUR",
-    "iteration": 1,
+    "executed": false,
     "parent": "Get dressed for the day | 👔👖"
   },
   {
@@ -1287,7 +1287,7 @@
     "importance": 2,
     "latestAccess": "2023-05-04 2:48:13 PM",
     "granularity": "HOUR",
-    "iteration": 1,
+    "executed": false,
     "parent": "Gather work materials (laptop, phone, etc.) | 💼📱"
   },
   {
@@ -1610,7 +1610,7 @@
     "importance": 3,
     "latestAccess": "2023-05-04 2:48:34 PM",
     "granularity": "HOUR",
-    "iteration": 1,
+    "executed": false,
     "parent": "Prepare ingredients for breakfast | 🥓🥚"
   },
   {
@@ -1932,7 +1932,7 @@
     "importance": 4,
     "latestAccess": "2023-05-04 2:48:34 PM",
     "granularity": "HOUR",
-    "iteration": 1,
+    "executed": false,
     "parent": "Cook breakfast | 🍳🥞"
   },
   {
@@ -2255,7 +2255,7 @@
     "importance": 4,
     "latestAccess": "2023-05-04 2:48:35 PM",
     "granularity": "HOUR",
-    "iteration": 1,
+    "executed": false,
     "parent": "Set the table for family breakfast | 🍽️🥛"
   },
   {
@@ -2578,7 +2578,7 @@
     "importance": 4,
     "latestAccess": "2023-05-04 2:48:34 PM",
     "granularity": "HOUR",
-    "iteration": 1,
+    "executed": false,
     "parent": "Eat breakfast and chat with family | 😊🍞👨‍👩‍👧‍👦"
   },
   {
@@ -2901,7 +2901,7 @@
     "importance": 2,
     "latestAccess": "2023-05-04 2:48:49 PM",
     "granularity": "HOUR",
-    "iteration": 1,
+    "executed": false,
     "parent": "Start driving to work | 🚗🛣️"
   },
   {
@@ -3224,7 +3224,7 @@
     "importance": 4,
     "latestAccess": "2023-05-04 2:48:49 PM",
     "granularity": "HOUR",
-    "iteration": 1,
+    "executed": false,
     "parent": "Listen to a podcast or music while driving | 🎧🎶"
   },
   {
@@ -3547,7 +3547,7 @@
     "importance": 3,
     "latestAccess": "2023-05-04 2:48:49 PM",
     "granularity": "HOUR",
-    "iteration": 1,
+    "executed": false,
     "parent": "Stop at a coffee shop for a quick coffee | ☕️🏪"
   },
   {
@@ -3870,7 +3870,7 @@
     "importance": 2,
     "latestAccess": "2023-05-04 2:48:49 PM",
     "granularity": "HOUR",
-    "iteration": 1,
+    "executed": false,
     "parent": "Continue driving to work | 🚗🛣️"
   },
   {
@@ -4193,7 +4193,7 @@
     "importance": 5,
     "latestAccess": "2023-05-04 2:49:06 PM",
     "granularity": "HOUR",
-    "iteration": 1,
+    "executed": false,
     "parent": "Work on assigned software project | 💻🔧"
   },
   {
@@ -4516,7 +4516,7 @@
     "importance": 4,
     "latestAccess": "2023-05-04 2:49:06 PM",
     "granularity": "HOUR",
-    "iteration": 1,
+    "executed": false,
     "parent": "Attend team meeting | 📣👥"
   },
   {
@@ -4839,7 +4839,7 @@
     "importance": 4,
     "latestAccess": "2023-05-04 2:49:06 PM",
     "granularity": "HOUR",
-    "iteration": 1,
+    "executed": false,
     "parent": "Respond to emails and collaborate with colleagues | 📧🤝"
   },
   {
@@ -5162,7 +5162,7 @@
     "importance": 3,
     "latestAccess": "2023-05-04 2:49:06 PM",
     "granularity": "HOUR",
-    "iteration": 1,
+    "executed": false,
     "parent": "Review and update project documentation | 📄🖋️"
   },
   {
@@ -5485,7 +5485,7 @@
     "importance": 3,
     "latestAccess": "2023-05-04 2:49:21 PM",
     "granularity": "HOUR",
-    "iteration": 1,
+    "executed": false,
     "parent": "Choose a healthy meal for lunch | 🥗🍽️"
   },
   {
@@ -5808,7 +5808,7 @@
     "importance": 4,
     "latestAccess": "2023-05-04 2:49:21 PM",
     "granularity": "HOUR",
-    "iteration": 1,
+    "executed": false,
     "parent": "Eat lunch and enjoy the break | 😋🍴"
   },
   {
@@ -6131,7 +6131,7 @@
     "importance": 3,
     "latestAccess": "2023-05-04 2:49:21 PM",
     "granularity": "HOUR",
-    "iteration": 1,
+    "executed": false,
     "parent": "Clean up and prepare to return to work | 🧹🔄"
   },
   {
@@ -6454,7 +6454,7 @@
     "importance": 5,
     "latestAccess": "2023-05-04 2:49:37 PM",
     "granularity": "HOUR",
-    "iteration": 1,
+    "executed": false,
     "parent": "Work on current software project | 💻🔧"
   },
   {
@@ -6776,7 +6776,7 @@
     "importance": 3,
     "latestAccess": "2023-05-04 2:49:37 PM",
     "granularity": "HOUR",
-    "iteration": 1,
+    "executed": false,
     "parent": "Afternoon coffee break | ☕️🍪"
   },
   {
@@ -7099,7 +7099,7 @@
     "importance": 5,
     "latestAccess": "2023-05-04 2:49:37 PM",
     "granularity": "HOUR",
-    "iteration": 1,
+    "executed": false,
     "parent": "Attend team meetings and collaborate with colleagues | 🤝💼"
   },
   {
@@ -7421,7 +7421,7 @@
     "importance": 3,
     "latestAccess": "2023-05-04 2:49:37 PM",
     "granularity": "HOUR",
-    "iteration": 1,
+    "executed": false,
     "parent": "Wrap up workday and plan for tomorrow | 🗓️📝"
   },
   {
@@ -7743,7 +7743,7 @@
     "importance": 3,
     "latestAccess": "2023-05-04 2:49:55 PM",
     "granularity": "HOUR",
-    "iteration": 1,
+    "executed": false,
     "parent": "Finish up work and gather belongings | 💻🎒"
   },
   {
@@ -8065,7 +8065,7 @@
     "importance": 3,
     "latestAccess": "2023-05-04 2:49:55 PM",
     "granularity": "HOUR",
-    "iteration": 1,
+    "executed": false,
     "parent": "Get in the car and start driving home | 🚗💨"
   },
   {
@@ -8387,7 +8387,7 @@
     "importance": 4,
     "latestAccess": "2023-05-04 2:49:55 PM",
     "granularity": "HOUR",
-    "iteration": 1,
+    "executed": false,
     "parent": "Listen to podcast or music while driving | 🎧🎶"
   },
   {
@@ -8710,7 +8710,7 @@
     "importance": 2,
     "latestAccess": "2023-05-04 2:49:54 PM",
     "granularity": "HOUR",
-    "iteration": 1,
+    "executed": false,
     "parent": "Arrive home and park the car | 🏡🚘"
   },
   {
@@ -9032,7 +9032,7 @@
     "importance": 3,
     "latestAccess": "2023-05-04 2:50:13 PM",
     "granularity": "HOUR",
-    "iteration": 1,
+    "executed": false,
     "parent": "Prepare dinner ingredients and start cooking | 🍳🥕🧅"
   },
   {
@@ -9355,7 +9355,7 @@
     "importance": 3,
     "latestAccess": "2023-05-04 2:50:13 PM",
     "granularity": "HOUR",
-    "iteration": 1,
+    "executed": false,
     "parent": "Set the table and finish cooking | 🍽️🥘"
   },
   {
@@ -9677,7 +9677,7 @@
     "importance": 5,
     "latestAccess": "2023-05-04 2:50:13 PM",
     "granularity": "HOUR",
-    "iteration": 1,
+    "executed": false,
     "parent": "Eat dinner with family and have conversations | 🍽️👨‍👩‍👧‍👦💬"
   },
   {
@@ -10000,7 +10000,7 @@
     "importance": 6,
     "latestAccess": "2023-05-04 2:50:36 PM",
     "granularity": "HOUR",
-    "iteration": 1,
+    "executed": false,
     "parent": "Help kids with homework | 📚👩‍👧‍👦"
   },
   {
@@ -10322,7 +10322,7 @@
     "importance": 6,
     "latestAccess": "2023-05-04 2:50:35 PM",
     "granularity": "HOUR",
-    "iteration": 1,
+    "executed": false,
     "parent": "Play a board game with family | 🎲👨‍👩‍👧‍👦"
   },
   {
@@ -10644,7 +10644,7 @@
     "importance": 5,
     "latestAccess": "2023-05-04 2:50:35 PM",
     "granularity": "HOUR",
-    "iteration": 1,
+    "executed": false,
     "parent": "Discuss the day with spouse | 💬❤️"
   },
   {
@@ -10967,7 +10967,7 @@
     "importance": 6,
     "latestAccess": "2023-05-04 2:50:36 PM",
     "granularity": "HOUR",
-    "iteration": 1,
+    "executed": false,
     "parent": "Read a bedtime story to kids | 📖😴"
   },
   {
@@ -11289,7 +11289,7 @@
     "importance": 3,
     "latestAccess": "2023-05-04 2:50:52 PM",
     "granularity": "HOUR",
-    "iteration": 1,
+    "executed": false,
     "parent": "Choose a TV show or movie to watch | 📺🤔"
   },
   {
@@ -11611,7 +11611,7 @@
     "importance": 3,
     "latestAccess": "2023-05-04 2:50:52 PM",
     "granularity": "HOUR",
-    "iteration": 1,
+    "executed": false,
     "parent": "Watch the selected TV show or movie | 📺😊"
   },
   {
@@ -11934,7 +11934,7 @@
     "importance": 2,
     "latestAccess": "2023-05-04 2:50:53 PM",
     "granularity": "HOUR",
-    "iteration": 1,
+    "executed": false,
     "parent": "Wrap up and get ready for bed | 🛋️🌙"
   },
   {
@@ -12257,7 +12257,7 @@
     "importance": 3,
     "latestAccess": "2023-05-04 2:51:10 PM",
     "granularity": "HOUR",
-    "iteration": 1,
+    "executed": false,
     "parent": "Sleep - Early night rest | 😴💤"
   },
   {
@@ -12580,7 +12580,7 @@
     "importance": 2,
     "latestAccess": "2023-05-04 2:51:10 PM",
     "granularity": "HOUR",
-    "iteration": 1,
+    "executed": false,
     "parent": "Deep sleep - Recharging | 😴💤"
   },
   {
@@ -12902,7 +12902,7 @@
     "importance": 4,
     "latestAccess": "2023-05-04 2:51:10 PM",
     "granularity": "HOUR",
-    "iteration": 1,
+    "executed": false,
     "parent": "Continue sleep - Dreams | 😴💤🌙"
   },
   {
@@ -13224,7 +13224,7 @@
     "importance": 2,
     "latestAccess": "2023-05-04 2:51:10 PM",
     "granularity": "HOUR",
-    "iteration": 1,
+    "executed": false,
     "parent": "Light sleep - Preparing to wake up | 😴💤☀️"
   },
   {

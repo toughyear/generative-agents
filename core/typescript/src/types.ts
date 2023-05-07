@@ -49,7 +49,7 @@ export interface Reflection extends BaseMemory {
 
 export interface Plan extends BaseMemory {
   type: MemoryType.PLAN;
-  iteration: number;
+  executed: boolean;
   granularity: "DAY" | "HOUR" | "MINUTE";
   start: number;
   end: number;

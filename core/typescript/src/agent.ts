@@ -28,11 +28,10 @@ export class Agent {
   memoryCount: {
     observation: number;
     reflection: number;
-    plan: number;
     conversation: number;
   };
 
-  latestPlanIteration: number;
+  dayPlan: Plan[];
 
   importanceScoreSumSinceLastPurge: number;
 
@@ -65,10 +64,9 @@ export class Agent {
     this.memoryCount = {
       observation: 0,
       reflection: 0,
-      plan: 0,
       conversation: 0,
     };
-    this.latestPlanIteration = 0;
+    this.dayPlan = [];
     this.importanceScoreSumSinceLastPurge = 0;
     this.action = {
       status: "sleeping",
@@ -167,11 +165,7 @@ export class Agent {
     try {
       if (testing) {
         // Read from local JSON file
-        this.memoryStream.push(...(sampleAgentPlan as Plan[]));
-        this.memoryCount.plan += sampleAgentPlan.length;
-
-        // update latest plan iteration
-        this.latestPlanIteration += 1;
+        this.dayPlan.push(...(sampleAgentPlan as Plan[]));
         // Execute the new plan
         await this.executePlan();
 
@@ -204,11 +198,8 @@ export class Agent {
               planItem.description
             );
 
-            // update memory count
-            this.memoryCount.plan += 1;
-
             return {
-              id: `plan_${this.memoryCount.plan}`,
+              id: `plan_${this.dayPlan.length + 1}`,
               createdAt: dateToString(new Date()),
               start: planItem.start,
               end: planItem.end,
@@ -216,9 +207,9 @@ export class Agent {
               type: MemoryType.PLAN,
               embedding,
               importance,
+              executed: false,
               latestAccess: dateToString(new Date()),
               granularity: "HOUR",
-              iteration: this.latestPlanIteration + 1,
               parent: planItem.description,
             };
           }
@@ -227,12 +218,10 @@ export class Agent {
         // resolve the promises
         const resolvedPlanMemories = await Promise.all(planMemories);
 
-        // Add the detailed plan to the memory stream
-        this.memoryStream.push(...resolvedPlanMemories);
+        // Add the detailed plan to the agent's day plan
+        this.dayPlan.push(...resolvedPlanMemories);
       }
 
-      // update latest plan iteration
-      this.latestPlanIteration += 1;
       // Execute the new plan
       await this.executePlan();
     } catch (error) {
@@ -242,11 +231,7 @@ export class Agent {
 
   executePlan = async () => {
     // Check if the agent has a plan
-    const currentPlans = this.memoryStream.filter(
-      (memory) =>
-        memory.type === MemoryType.PLAN &&
-        (memory as Plan).iteration === this.latestPlanIteration
-    ) as Plan[];
+    const currentPlans = this.dayPlan;
 
     if (currentPlans.length === 0) {
       console.log("No plan found for the agent.");

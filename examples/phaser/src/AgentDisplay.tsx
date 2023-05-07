@@ -39,9 +39,6 @@ const AgentDisplay: React.FC<AgentDisplayProps> = ({ agent }) => {
           <p>
             <strong>Currently at:</strong> {agent.location}
           </p>
-          <p>
-            <strong>Latest Plan Iteration:</strong> {agent.latestPlanIteration}
-          </p>
         </div>
         <div>
           <p>
