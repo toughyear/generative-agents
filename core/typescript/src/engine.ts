@@ -382,26 +382,31 @@ ${planItems
       n: 1,
     };
 
-    // Call the OpenAI API
-    const response = await this.openai.createChatCompletion(parameters);
+    try {
+      // Call the OpenAI API
+      const response = await this.openai.createChatCompletion(parameters);
 
-    // Get the generated preferred location from the response
-    const prediction = response.data.choices[0].message?.content.trim();
+      // Get the generated preferred location from the response
+      const prediction = response.data.choices[0].message?.content.trim();
 
-    if (!prediction) {
-      console.log("ERROR: No preferred location generated");
+      if (!prediction) {
+        console.log("ERROR: No preferred location generated");
+        return currentLocation; // return the current location if no preferred location generated
+      }
+
+      const regex = /PREFERRED_LOCATION:\s+(.+)/g;
+
+      const match = regex.exec(prediction);
+
+      if (!match) {
+        console.log("ERROR: No preferred location generated");
+        return currentLocation; // return the current location if no preferred location generated
+      }
+
+      return match[1];
+    } catch (error) {
+      console.log(error);
       return currentLocation; // return the current location if no preferred location generated
     }
-
-    const regex = /PREFERRED_LOCATION:\s+(.+)/g;
-
-    const match = regex.exec(prediction);
-
-    if (!match) {
-      console.log("ERROR: No preferred location generated");
-      return currentLocation; // return the current location if no preferred location generated
-    }
-
-    return match[1];
   }
 }

@@ -1,12 +1,16 @@
 import Phaser from "phaser";
 import BubbleText from "./BubbleText";
-import { Agent } from "generative-agents";
+import { Agent, AgentEvents } from "generative-agents";
 import { locations } from "../data/world";
 
 class AgentCharacter extends Phaser.GameObjects.Sprite {
   private agent: Agent;
 
   private bubbleText: BubbleText;
+
+  // target coordinates for the agent to move to
+  private targetX = 0;
+  private targetY = 0;
 
   constructor(
     scene: Phaser.Scene,
@@ -18,6 +22,10 @@ class AgentCharacter extends Phaser.GameObjects.Sprite {
     super(scene, x, y, sprite);
     this.agent = agent;
     scene.add.existing(this);
+
+    // add event listeners for agent event
+    this.agent.on(AgentEvents.TASK_FINISHED, this.updateAgentLocation);
+
     this.createAnimations();
     this.bubbleText = new BubbleText(
       scene,
@@ -79,7 +87,10 @@ class AgentCharacter extends Phaser.GameObjects.Sprite {
   }
 
   update() {
-    this.updateAgentLocation();
+    // if not moving, play idle animation
+    if (this.targetX === 0 && this.targetY === 0) {
+      this.play(`${this.agent.id}_idle`, true);
+    }
 
     // Update the bubble text position
     this.bubbleText.x = this.x + 10;
@@ -104,39 +115,49 @@ class AgentCharacter extends Phaser.GameObjects.Sprite {
       .toUpperCase();
   }
 
-  updateAgentLocation() {
+  updateAgentLocation = () => {
     const targetLocation = locations.find(
       (location) => location.name === this.agent.location
     );
 
     if (!targetLocation) {
-      this.anims.play(`${this.agent.id}_idle`, true);
+      // agent is already moving
       return;
     }
 
-    const targetX = targetLocation.x + targetLocation.width / 2;
-    const targetY = targetLocation.y + targetLocation.height / 2;
+    const offsetX =
+      Math.floor(Math.random() * targetLocation.width) -
+      targetLocation.width / 2;
+    const offsetY =
+      Math.floor(Math.random() * targetLocation.height) -
+      targetLocation.height / 2;
 
-    const tolerance = 2; // Tolerance value to determine if the agent is close enough to the target position
+    this.targetX = targetLocation.x + targetLocation.width / 2 + offsetX;
+    this.targetY = targetLocation.y + targetLocation.height / 2 + offsetY;
 
-    if (
-      Math.abs(this.x - targetX) > tolerance ||
-      Math.abs(this.y - targetY) > tolerance
-    ) {
-      // Move vertically first
-      if (Math.abs(this.y - targetY) > tolerance) {
-        const verticalDirection = this.y < targetY ? "down" : "up";
-        this.moveCharacter(verticalDirection);
-      }
-      // Move horizontally after reaching the target Y position
-      else {
-        const horizontalDirection = this.x < targetX ? "right" : "left";
-        this.moveCharacter(horizontalDirection);
-      }
-    } else {
-      this.anims.play(`${this.agent.id}_idle`, true);
-    }
-  }
+    const distanceX = Math.abs(this.x - this.targetX);
+    const distanceY = Math.abs(this.y - this.targetY);
+
+    const durationX = distanceX;
+    const durationY = distanceY;
+
+    this.scene.tweens.add({
+      targets: this,
+      y: this.targetY,
+      duration: durationY * 5,
+      onComplete: () => {
+        this.scene.tweens.add({
+          targets: this,
+          x: this.targetX,
+          duration: durationX * 5,
+          onComplete: () => {
+            this.anims.play(`${this.agent.id}_idle`, true);
+            this.agent.executeCurrentTask();
+          },
+        });
+      },
+    });
+  };
 
   moveCharacter(direction: string) {
     switch (direction) {

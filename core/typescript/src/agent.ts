@@ -1,3 +1,4 @@
+import { EventEmitter } from "events";
 import { AgentEngine } from "./engine";
 import { dateToString } from "./formatters";
 import {
@@ -13,7 +14,11 @@ import {
 } from "./types";
 import sampleAgentPlan from "./samplePlan.json";
 
-export class Agent {
+export enum AgentEvents {
+  TASK_FINISHED = "TASK_FINISHED",
+}
+
+export class Agent extends EventEmitter {
   engine: AgentEngine;
   id: string;
   name: string;
@@ -54,6 +59,8 @@ export class Agent {
     world: World = {},
     location: string = ""
   ) {
+    super();
+
     this.engine = engine;
     this.id = id;
     this.name = name;
@@ -167,7 +174,7 @@ export class Agent {
         // Read from local JSON file
         this.dayPlan.push(...(sampleAgentPlan as Plan[]));
         // Execute the new plan
-        await this.executePlan();
+        await this.executeCurrentTask();
 
         return;
       }
@@ -223,50 +230,74 @@ export class Agent {
       }
 
       // Execute the new plan
-      await this.executePlan();
+      await this.executeCurrentTask();
     } catch (error) {
       console.error("Error creating plan:", error);
     }
   }
 
-  executePlan = async () => {
+  executeCurrentTask = async () => {
     // Check if the agent has a plan
-    const currentPlans = this.dayPlan;
+    const { dayPlan } = this;
 
-    if (currentPlans.length === 0) {
+    if (dayPlan.length === 0) {
       console.log("No plan found for the agent.");
       return;
     }
 
-    // Execute the plan
-    for (const plan of currentPlans) {
-      // update action
-      this.action = {
-        status: plan.description,
-        emoji: plan.description.split("|")[1].replace(" ", ""),
-      };
+    // Find the first unexecuted plan
+    const currentTask = dayPlan.find((plan) => !plan.executed);
 
-      // update location
-      const newLocation = await this.engine.findPreferredLocation(
-        this.world,
-        plan.description,
-        this.location,
-        `${this.name}, ${this.age}, ${this.personality.background}, ${this.personality.currentGoal}`
-      );
-
-      console.log(`Agent ${this.name} should go to ${newLocation}`);
-
-      if (newLocation) {
-        this.location = newLocation;
-      }
-
-      const planDuration = plan.end - plan.start;
-
-      console.log(
-        `Agent ${this.name} is executing plan: ${plan.description} for ${planDuration}s`
-      );
-
-      await new Promise((resolve) => setTimeout(resolve, planDuration * 1000));
+    if (!currentTask) {
+      console.log("No unexecuted task found for the agent.");
+      return;
     }
+
+    // Update action
+    this.action = {
+      status: currentTask.description,
+      emoji: currentTask.description.split("|")[1].replace(" ", ""),
+    };
+
+    const taskDuration = currentTask.end - currentTask.start;
+
+    console.log(
+      `Agent ${this.name} is executing task: ${currentTask.description} for ${taskDuration}s`
+    );
+
+    // wait for the agent to execute the task
+    await new Promise((resolve) => setTimeout(resolve, taskDuration * 1000));
+
+    // Mark the task as executed
+    currentTask.executed = true;
+
+    // Update location for next task
+    const nextTask = dayPlan.find((plan) => !plan.executed);
+
+    if (!nextTask) {
+      // No more tasks left
+      // notify the agent that it finished its current task
+      this.emit(AgentEvents.TASK_FINISHED);
+      return;
+    }
+
+    const nextLocation = await this.engine.findPreferredLocation(
+      this.world,
+      nextTask.description,
+      this.location,
+      `${this.name}, ${this.age}, ${this.personality.background}, ${this.personality.currentGoal}`
+    );
+
+    // update action status to next task
+    this.action = {
+      status: nextTask.description,
+      emoji: nextTask.description.split("|")[1].replace(" ", ""),
+    };
+
+    console.log(`Agent ${this.name} should go to ${nextLocation}`);
+
+    this.location = nextLocation;
+    // notify the agent that it finished its current task
+    this.emit(AgentEvents.TASK_FINISHED);
   };
 }
