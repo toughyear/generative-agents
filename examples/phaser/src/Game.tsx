@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import PhaserGame from "./phaserGame";
 import { Agent, AgentEngine, buildSpatialWorld } from "generative-agents";
 
@@ -33,10 +33,42 @@ function Game(props: Props) {
     )
   ).current;
 
+  const [selectedAgentIndex, setSelectedAgentIndex] = useState(0);
+
+  const nextAgent = () => {
+    setSelectedAgentIndex((prevIndex) => (prevIndex + 1) % agents.length);
+  };
+
+  const prevAgent = () => {
+    setSelectedAgentIndex(
+      (prevIndex) => (prevIndex - 1 + agents.length) % agents.length
+    );
+  };
+
   return (
     <div className='p-5 overflow-scroll bg-gray-50'>
-      <AgentDisplay agent={agents[0]} />
-      <PhaserGame agents={agents.slice(0, 1)} />
+      <AgentDisplay agent={agents[selectedAgentIndex]} />
+      <div className='my-2'>
+        <button
+          onClick={prevAgent}
+          className='bg-black text-white font-bold py-2 px-4 rounded-md hover:bg-gray-800 mr-2 transition duration-300'
+        >
+          &lt; Previous
+        </button>
+        <button
+          onClick={nextAgent}
+          className='bg-black text-white font-bold py-2 px-4 rounded-md hover:bg-gray-800 mr-2 transition duration-300'
+        >
+          Next &gt;
+        </button>
+        <button
+          onClick={nextAgent}
+          className='bg-green-500 text-white font-bold py-2 px-4 rounded-md hover:bg-green-600 mr-2 transition duration-300'
+        >
+          Chat
+        </button>
+      </div>
+      <PhaserGame agents={[agents[selectedAgentIndex]]} />
     </div>
   );
 }
