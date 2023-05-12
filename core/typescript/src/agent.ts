@@ -271,6 +271,9 @@ export class Agent extends EventEmitter {
     // Mark the task as executed
     currentTask.executed = true;
 
+    // observe that the agent has executed the task
+    this.observe(`executed task: ${currentTask.description}`);
+
     // Update location for next task
     const nextTask = dayPlan.find((plan) => !plan.executed);
 

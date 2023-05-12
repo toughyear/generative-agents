@@ -19,8 +19,9 @@ export const agentsData: AgentInitData[] = [
     name: "Thomas Miller",
     age: 42,
     startLocation: "thomas_miller_bed",
-    background: "Father of 2, works as a software engineer.",
-    currentGoal: "To get a promotion at work.",
+    background:
+      "Runs Taiki seafood restaurant with his wife Susan. Has a daughter Lucy and a son Mike.",
+    currentGoal: "Getting a new chef for the restaurant.",
     innateTendency: ["Curious", "Adventurous", "Optimistic"],
     learnedTendency: ["Hardworking", "Responsible", "Diligent"],
     lifestyle:
@@ -33,7 +34,8 @@ export const agentsData: AgentInitData[] = [
     name: "Susan Miller",
     age: 40,
     startLocation: "susan_miller_bed",
-    background: "Mother of 2, runs the Taiki seafood restaurant.",
+    background:
+      "Runs the Taiki seafood restaurant with her husband Thomas. Has a daughter Lucy and a son Mike.",
     currentGoal: "To expand the restaurant's menu and attract more customers.",
     innateTendency: ["Creative", "Ambitious", "Friendly"],
     learnedTendency: ["Organized", "Determined", "Caring"],
@@ -48,7 +50,7 @@ export const agentsData: AgentInitData[] = [
     age: 16,
     startLocation: "lucy_miller_bed",
     background:
-      "High school student, helps out at the restaurant after school.",
+      "High school student, helps out at the restaurant after school. Has a younger brother Mike. Parents are Thomas and Susan Miller, the owners of Taiki seafood restaurant.",
     currentGoal: "To get accepted into a top college.",
     innateTendency: ["Intelligent", "Curious", "Kind"],
     learnedTendency: ["Studious", "Responsible", "Helpful"],
@@ -62,7 +64,8 @@ export const agentsData: AgentInitData[] = [
     name: "Michael Miller",
     age: 14,
     startLocation: "mike_miller_bed",
-    background: "Middle school student, enjoys playing video games.",
+    background:
+      "Middle school student, enjoys playing video games. Has an older sister Lucy. Parents are Thomas and Susan Miller, the owners of Taiki seafood restaurant.",
     currentGoal: "To win a regional gaming competition.",
     innateTendency: ["Competitive", "Imaginative", "Lighthearted"],
     learnedTendency: ["Resourceful", "Persevering", "Collaborative"],
@@ -75,7 +78,8 @@ export const agentsData: AgentInitData[] = [
     name: "James Johnson",
     age: 45,
     startLocation: "james_johnson_bed",
-    background: "Father of 2, owns and manages the Maven Cafe.",
+    background:
+      "owns and manages the Maven Cafe with his wife Linda. Henry and Nicole are his children.",
     currentGoal: "To create a popular event series at the cafe.",
     innateTendency: ["Social", "Visionary", "Generous"],
     learnedTendency: ["Entrepreneurial", "Diplomatic", "Reliable"],
@@ -89,7 +93,8 @@ export const agentsData: AgentInitData[] = [
     name: "Linda Johnson",
     age: 43,
     startLocation: "linda_johnson_bed",
-    background: "Mother of 2, helps manage the Maven Cafe.",
+    background:
+      "owns and manages the Maven Cafe with her husband James. Henry and Nicole are her children.",
     currentGoal: "To create a community art exhibition at the cafe.",
     innateTendency: ["Creative", "Ambitious", "Friendly"],
     learnedTendency: ["Organized", "Determined", "Caring"],
@@ -103,7 +108,7 @@ export const agentsData: AgentInitData[] = [
     age: 18,
     startLocation: "henry_johnson_bed",
     background:
-      "College-bound student, occasionally helps out at the Maven Cafe.",
+      "College-bound student, occasionally helps out at the Maven Cafe after school. Has a younger sister Nicole. Parents are James and Linda Johnson, the owners of Maven Cafe.",
     currentGoal:
       "To choose the right college major and start a successful career.",
     innateTendency: ["Inquisitive", "Adaptable", "Open-minded"],
@@ -119,7 +124,7 @@ export const agentsData: AgentInitData[] = [
     age: 21,
     startLocation: "nicole_johnson_bed",
     background:
-      "Avid outdoorswoman, leads guided tours and hikes in the Tsurugi forest.",
+      "Avid outdoorswoman, leads guided tours and hikes in the Tsurugi forest. Has an older brother Henry. Parents are James and Linda Johnson, the owners of Maven Cafe.",
     currentGoal: "To start her own adventure tourism business.",
     innateTendency: ["Adventurous", "Resourceful", "Empathetic"],
     learnedTendency: [

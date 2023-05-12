@@ -65,6 +65,23 @@ export class MainScene extends Phaser.Scene {
     // populate plans for all agents
     this.agents.forEach((agent, index) => {
       agent.createPlan(true);
+      // fill basic observations
+      agent.observe(`background: ${agent.personality.background}`);
+      agent.observe(`current Goal: ${agent.personality.currentGoal}`);
+      agent.observe(
+        `agent has following innate tendencies: ${agent.personality.innateTendency.join(
+          ", "
+        )}`
+      );
+      agent.observe(
+        `agent has following learned tendencies: ${agent.personality.learnedTendency.join(
+          ", "
+        )}`
+      );
+      agent.observe(
+        `agent has following values: ${agent.personality.values.join(", ")}`
+      );
+
       const startLocation = locations.find(
         (location) => location.name === agent.location
       );
