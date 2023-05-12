@@ -123,17 +123,6 @@ export class MainScene extends Phaser.Scene {
     if (cursors.down.isDown || (this.keyS && this.keyS.isDown)) {
       this.cameras.main.scrollY += this.cameraScrollSpeed;
     }
-    // Clamp the camera scroll values within the bounds
-    this.cameras.main.scrollX = Phaser.Math.Clamp(
-      this.cameras.main.scrollX,
-      0,
-      this.cameras.main.getBounds().width - this.cameras.main.width
-    );
-    this.cameras.main.scrollY = Phaser.Math.Clamp(
-      this.cameras.main.scrollY,
-      0,
-      this.cameras.main.getBounds().height - this.cameras.main.height
-    );
   }
 
   /**
@@ -158,7 +147,7 @@ export class MainScene extends Phaser.Scene {
         // Cap the zoom level within a range
         this.cameras.main.zoom = Phaser.Math.Clamp(
           this.cameras.main.zoom,
-          0.5,
+          0.4,
           2
         );
       }
