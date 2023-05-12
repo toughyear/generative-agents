@@ -51,19 +51,19 @@ function Game(props: Props) {
       <div className='my-2'>
         <button
           onClick={prevAgent}
-          className='bg-black text-white font-bold py-2 px-4 rounded-md hover:bg-gray-800 mr-2 transition duration-300'
+          className='bg-black text-white font-bold py-2 px-4  hover:bg-gray-800 mr-2 transition duration-300'
         >
           &lt; Previous
         </button>
         <button
           onClick={nextAgent}
-          className='bg-black text-white font-bold py-2 px-4 rounded-md hover:bg-gray-800 mr-2 transition duration-300'
+          className='bg-black text-white font-bold py-2 px-4  hover:bg-gray-800 mr-2 transition duration-300'
         >
           Next &gt;
         </button>
         <button
           onClick={nextAgent}
-          className='bg-green-500 text-white font-bold py-2 px-4 rounded-md hover:bg-green-600 mr-2 transition duration-300'
+          className='bg-green-500 text-white font-bold py-2 px-4  hover:bg-green-600 mr-2 transition duration-300'
         >
           Chat
         </button>
