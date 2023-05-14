@@ -112,6 +112,7 @@ export class MainScene extends Phaser.Scene {
   private playBackgroundMusic() {
     const bgm = this.sound.add("bgm", {
       loop: true,
+      volume: 0.1,
     });
     bgm.play();
   }
