@@ -2,6 +2,7 @@ import { Configuration, CreateChatCompletionRequest, OpenAIApi } from "openai";
 import { cosineSimilarity } from "./maths";
 import { AgentPersonality, World } from "./types";
 import { getAllKeys } from "./formatters";
+import { Agent } from "./agent";
 
 /**
  * returns a engine instance that manages agents and their inference requirements
@@ -407,6 +408,63 @@ ${planItems
     } catch (error) {
       console.log(error);
       return currentLocation; // return the current location if no preferred location generated
+    }
+  }
+
+  async reply(message: string, agent: Agent, context: string): Promise<string> {
+    // Construct the prompt for the OpenAI API
+    const prompt = `You are acting as a game character named ${
+      agent.name
+    }, who has the following personality:
+Background: ${agent.personality.background}
+age: ${agent.age}
+Innate Tendencies: ${agent.personality.innateTendency.join(", ")}
+Learned Tendencies: ${agent.personality.learnedTendency.join(", ")}
+Current Goal: ${agent.personality.currentGoal}
+Lifestyle: ${agent.personality.lifestyle}
+Values: ${agent.personality.values.join(", ")}
+
+The agent is having a conversation. Here is the relevant context: 
+CONTEXT START
+${context}
+CONTEXT END
+
+The character is having a conversation with another character. Here is the message they are responding to:
+"${message}"
+
+Given the character's personality and the context provided above, reply as the character.
+`;
+
+    // Set the OpenAI API parameters
+    const parameters: CreateChatCompletionRequest = {
+      model: this.model,
+      messages: [
+        {
+          role: "user",
+          content: prompt,
+        },
+      ],
+      temperature: 0.7,
+      max_tokens: 100,
+      n: 1,
+    };
+
+    try {
+      // Call the OpenAI API
+      const response = await this.openai.createChatCompletion(parameters);
+
+      // Get the generated response from the API
+      const reply = response.data.choices[0].message?.content.trim();
+
+      if (!reply) {
+        console.log("ERROR: No reply generated");
+        return "I'm not sure how to respond.";
+      }
+
+      return reply;
+    } catch (error) {
+      console.log(error);
+      return "I'm not sure how to respond.";
     }
   }
 }

@@ -15,18 +15,35 @@ type Message = {
 const AgentChat: React.FC<AgentChatProps> = ({ agent, closeChat }) => {
   const [messages, setMessages] = useState<Message[]>([
     { sender: "agent", content: "Welcome! How can I help you today?" },
-    { sender: "user", content: "yo" },
-    { sender: "user", content: "testing this boi" },
+    { sender: "user", content: "Hi" },
+    {
+      sender: "user",
+      content: "I am a reporter and wanted to talk to you about a few things.",
+    },
   ]);
   const [inputMessage, setInputMessage] = useState("");
+  const [isAgentReplying, setIsAgentReplying] = useState(false);
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (inputMessage.trim()) {
       setMessages([
         ...messages,
         { sender: "user", content: inputMessage.trim() },
       ]);
       setInputMessage("");
+
+      if (agent) {
+        setIsAgentReplying(true);
+
+        const agentReply = await agent.replyWithContext(inputMessage.trim(), [
+          "user",
+        ]);
+        setIsAgentReplying(false);
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          { sender: "agent", content: agentReply },
+        ]);
+      }
     }
   };
 
@@ -71,6 +88,40 @@ const AgentChat: React.FC<AgentChatProps> = ({ agent, closeChat }) => {
             </p>
           </div>
         ))}
+        {isAgentReplying && (
+          <div className='flex justify-start mb-2'>
+            <style>
+              {`
+          .dot {
+            animation: blink 1.4s linear infinite;
+          }
+
+          .dot:nth-child(2) {
+            animation-delay: 0.2s;
+          }
+
+          .dot:nth-child(3) {
+            animation-delay: 0.4s;
+          }
+
+          @keyframes blink {
+            0% {
+              opacity: 0.2;
+            }
+            20% {
+              opacity: 1;
+            }
+            100% {
+              opacity: 0.2;
+            }
+          }
+        `}
+            </style>
+            <span className='dot bg-gray-500 inline-block mx-1 w-2 h-2 rounded-full'></span>
+            <span className='dot bg-gray-500 inline-block mx-1 w-2 h-2 rounded-full'></span>
+            <span className='dot bg-gray-500 inline-block mx-1 w-2 h-2 rounded-full'></span>
+          </div>
+        )}
       </div>
       <div className='mt-4 px-2 py-4'>
         <form

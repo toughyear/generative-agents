@@ -6,6 +6,7 @@ import { agentsData } from "./data/agents";
 import AgentDisplay from "./AgentDisplay";
 import { locations } from "./data/world";
 import AgentChat from "./AgentChat";
+import NotificationModal from "./NotificationModal";
 
 interface Props {
   openaiKey: string;
@@ -13,6 +14,11 @@ interface Props {
 
 function Game(props: Props) {
   const { openaiKey } = props;
+  const [showNotification, setShowNotification] = useState(true);
+
+  const handleCloseNotification = () => {
+    setShowNotification(false);
+  };
 
   const engine = useRef(new AgentEngine(openaiKey)).current;
 
@@ -50,6 +56,12 @@ function Game(props: Props) {
   return (
     <div className='p-5 overflow-scroll bg-gray-50 relative'>
       <AgentDisplay agent={agents[selectedAgentIndex]} />
+      {showNotification && (
+        <NotificationModal
+          message='All the agents are sharing the same cached plan for the day because of the rate limiting by OpenAI. We are working on a long-term fix.'
+          onClose={handleCloseNotification}
+        />
+      )}
       {showChat && (
         <AgentChat
           agent={agents[selectedAgentIndex]}
@@ -76,7 +88,7 @@ function Game(props: Props) {
           Chat
         </button>
       </div>
-      <PhaserGame agents={[agents[selectedAgentIndex]]} />
+      <PhaserGame agents={agents} />
     </div>
   );
 }

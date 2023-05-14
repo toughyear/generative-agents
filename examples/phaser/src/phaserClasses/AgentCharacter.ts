@@ -12,6 +12,8 @@ class AgentCharacter extends Phaser.GameObjects.Sprite {
   private targetX = 0;
   private targetY = 0;
 
+  private visualRange: Phaser.GameObjects.Graphics;
+
   constructor(
     scene: Phaser.Scene,
     agent: Agent,
@@ -33,6 +35,13 @@ class AgentCharacter extends Phaser.GameObjects.Sprite {
       y - 20,
       `${this.getAgentInitials()}: 👀`
     );
+
+    // Draw a red circle around the agent representing their visual range
+    const visualRange = new Phaser.GameObjects.Graphics(scene);
+    visualRange.lineStyle(2, 0xff0000, 0.5);
+    visualRange.strokeCircle(0, 0, 100);
+    scene.add.existing(visualRange);
+    this.visualRange = visualRange;
   }
 
   createAnimations() {
@@ -100,6 +109,10 @@ class AgentCharacter extends Phaser.GameObjects.Sprite {
     this.bubbleText.updateText(
       `${this.getAgentInitials()}: ${this.agent.action.emoji}`
     );
+
+    // Update the visual range
+    this.visualRange.x = this.x;
+    this.visualRange.y = this.y;
   }
 
   // Add a method to update the bubble text content

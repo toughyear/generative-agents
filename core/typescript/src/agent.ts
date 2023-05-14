@@ -303,4 +303,40 @@ export class Agent extends EventEmitter {
     // notify the agent that it finished its current task
     this.emit(AgentEvents.TASK_FINISHED);
   };
+
+  replyWithContext = async (
+    message: string,
+    participants: string[]
+  ): Promise<string> => {
+    // Get the top 5 memories from the memory stream
+    const memories = this.memoryStream.slice(-100);
+
+    // Convert memories to a context string
+    const context = memories.map((memory) => memory.description).join("\n");
+
+    // Call the engine's reply method with the given message and context
+    const reply = await this.engine.reply(message, this, context);
+
+    const memoryDescription = `This is beginning of a conversation with ${participants.join(
+      ", "
+    )}.
+      They said: ${message}
+      You replied: ${reply}
+    `;
+
+    // add reply to memory stream
+    this.memoryStream.push({
+      id: `conv_${this.memoryCount.conversation + 1}`,
+      createdAt: dateToString(new Date()),
+      description: memoryDescription,
+      type: MemoryType.CONVERSATION,
+      embedding: await this.engine.getEmbedding(reply),
+      importance: await this.engine.getImportanceScore(reply),
+      latestAccess: dateToString(new Date()),
+      participants: participants,
+    });
+
+    // Return the generated reply
+    return reply;
+  };
 }

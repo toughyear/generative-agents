@@ -58,6 +58,7 @@ export interface Plan extends BaseMemory {
 
 export interface Conversation extends BaseMemory {
   type: MemoryType.CONVERSATION;
+  participants: string[];
 }
 
 export type Memory = Observation | Reflection | Plan | Conversation;
