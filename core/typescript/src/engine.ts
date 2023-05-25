@@ -11,7 +11,7 @@ export class AgentEngine {
   openai: OpenAIApi;
   model: string;
 
-  constructor(apiKey: string, model: string = "gpt-4") {
+  constructor(apiKey: string, model: string = "gpt-3.5-turbo") {
     const configuration = new Configuration({
       apiKey,
     });

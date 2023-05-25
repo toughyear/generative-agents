@@ -50,10 +50,8 @@ export interface Reflection extends BaseMemory {
 export interface Plan extends BaseMemory {
   type: MemoryType.PLAN;
   executed: boolean;
-  granularity: "DAY" | "HOUR" | "MINUTE";
   start: number;
   end: number;
-  parent: string;
 }
 
 export interface Conversation extends BaseMemory {

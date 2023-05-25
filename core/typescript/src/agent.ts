@@ -216,8 +216,6 @@ export class Agent extends EventEmitter {
               importance,
               executed: false,
               latestAccess: dateToString(new Date()),
-              granularity: "HOUR",
-              parent: planItem.description,
             };
           }
         );
