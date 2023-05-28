@@ -99,3 +99,7 @@ If you have any ideas or suggestions, please open an issue or a pull request.
 Twitter DMs open [here](https://twitter.com/toughyear).
 
 _We are so back! Let's build the matrix together!_
+
+## Notice
+
+For the ease of access, we have put our OpenAI key in the code. Hopefully, we will not see any abuse. If you are planning to use this code for your own project, we request you to create your own OpenAI key and use it instead.
