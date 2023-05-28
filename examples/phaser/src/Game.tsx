@@ -7,6 +7,7 @@ import AgentDisplay from "./AgentDisplay";
 import { locations } from "./data/world";
 import AgentChat from "./AgentChat";
 import NotificationModal from "./NotificationModal";
+import Header from "./Header";
 
 interface Props {
   openaiKey: string;
@@ -55,6 +56,7 @@ function Game(props: Props) {
 
   return (
     <div className='p-5 overflow-scroll bg-gray-50 relative'>
+      <Header />
       <AgentDisplay agent={agents[selectedAgentIndex]} />
       {showNotification && (
         <NotificationModal
