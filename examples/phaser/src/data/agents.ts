@@ -21,7 +21,8 @@ export const agentsData: AgentInitData[] = [
     startLocation: "thomas_miller_bed",
     background:
       "Runs Taiki seafood restaurant with his wife Susan. Has a daughter Lucy and a son Mike.",
-    currentGoal: "Getting a new chef for the restaurant.",
+    currentGoal:
+      "Creating a new speciality dish for restaurant and getting a new chef.",
     innateTendency: ["Curious", "Adventurous", "Optimistic"],
     learnedTendency: ["Hardworking", "Responsible", "Diligent"],
     lifestyle:
@@ -35,13 +36,13 @@ export const agentsData: AgentInitData[] = [
     age: 40,
     startLocation: "susan_miller_bed",
     background:
-      "Runs the Taiki seafood restaurant with her husband Thomas. Has a daughter Lucy and a son Mike.",
-    currentGoal: "To expand the restaurant's menu and attract more customers.",
-    innateTendency: ["Creative", "Ambitious", "Friendly"],
-    learnedTendency: ["Organized", "Determined", "Caring"],
+      "Runs Taiki seafood restaurant, which is close to her house, with her husband Thomas. Has a daughter Lucy and a son Mike, both go to college.",
+    currentGoal: "Learn how to use the new cash register",
+    innateTendency: ["Early Riser", "Hardworking", "Responsible"],
+    learnedTendency: ["Hardworking", "Yoga", "Cooking"],
     lifestyle:
-      "manages the restaurant, takes care of the family, enjoys cooking",
-    values: ["Family", "Community", "Hard work"],
+      "Wakes up 7 and practices yoga. Goes to work at 8:30. Works until 5:30. Goes home and cooks dinner. Goes to bed at 10.",
+    values: ["Family", "Honesty"],
   },
   {
     id: "lucy_miller",
@@ -79,8 +80,8 @@ export const agentsData: AgentInitData[] = [
     age: 45,
     startLocation: "james_johnson_bed",
     background:
-      "owns and manages the Maven Cafe with his wife Linda. Henry and Nicole are his children.",
-    currentGoal: "To create a popular event series at the cafe.",
+      "Owns and manages the Maven Cafe with his wife Linda. Henry and Nicole are his children.",
+    currentGoal: "To host Valentine's Day celebration at the cafe.",
     innateTendency: ["Social", "Visionary", "Generous"],
     learnedTendency: ["Entrepreneurial", "Diplomatic", "Reliable"],
     lifestyle:

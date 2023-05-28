@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
+import { Routes, Route } from "react-router-dom";
 import Game from "./Game";
+import Test from "./pages/test";
 
 function App() {
   const openaiKeyFromEnv = process.env.REACT_APP_OPENAI_API_KEY;
@@ -47,7 +49,12 @@ function App() {
     );
   }
 
-  return <Game openaiKey={openaiKey} />;
+  return (
+    <Routes>
+      <Route path='/' element={<Game openaiKey={openaiKey} />} />
+      <Route path='/test' element={<Test openaiKey={openaiKey} />} />
+    </Routes>
+  );
 }
 
 export default App;

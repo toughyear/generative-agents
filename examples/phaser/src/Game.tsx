@@ -58,7 +58,7 @@ function Game(props: Props) {
       <AgentDisplay agent={agents[selectedAgentIndex]} />
       {showNotification && (
         <NotificationModal
-          message='All the agents are sharing the same cached plan for the day because of the rate limiting by OpenAI. We are working on a long-term fix.'
+          message='OpenAI APIs can be momentarily slow or out of service. Please be patient and try again later. We are using cached plans for all agents.'
           onClose={handleCloseNotification}
         />
       )}

@@ -11,7 +11,7 @@ export class AgentEngine {
   openai: OpenAIApi;
   model: string;
 
-  constructor(apiKey: string, model: string = "gpt-3.5-turbo") {
+  constructor(apiKey: string, model: string = "gpt-4") {
     const configuration = new Configuration({
       apiKey,
     });
@@ -40,7 +40,7 @@ export class AgentEngine {
 
     // set the OpenAI API parameters
     const parameters: CreateChatCompletionRequest = {
-      model: this.model,
+      model: "gpt-3.5-turbo",
       messages: [
         {
           role: "user",
@@ -53,13 +53,16 @@ export class AgentEngine {
       stop: "\n",
     };
 
-    // call the OpenAI API
-    const response = await this.openai.createChatCompletion(parameters);
-
-    // get the importance score from the response
-    const score = Number(response.data.choices[0].message?.content);
-
-    return score;
+    try {
+      // call the OpenAI API
+      const response = await this.openai.createChatCompletion(parameters);
+      // get the importance score from the response
+      const score = Number(response.data.choices[0].message?.content);
+      return score;
+    } catch (error: any) {
+      console.log(error);
+      return 7;
+    }
   }
 
   async getRelevanceScore(
@@ -243,6 +246,170 @@ What would ${name}'s day look like? Write in the following format:
     }
 
     return dayPlan;
+  }
+
+  async createTaskList(
+    name: string,
+    age: number,
+    personality: AgentPersonality,
+    depth: number = 2
+  ): Promise<
+    {
+      start: number;
+      end: number;
+      description: string;
+    }[]
+  > {
+    const initialPrompt = `Here is a description of ${name}, aged ${age} \n
+    Background: ${personality.background}
+    Innate Tendencies: ${personality.innateTendency.join(", ")}
+    Learned Tendencies: ${personality.learnedTendency.join(", ")}
+    Current Goal: ${personality.currentGoal}
+    Lifestyle: ${personality.lifestyle}
+    Values: ${personality.values.join(", ")}
+
+    What would ${name}'s day look like? Write in the following format:
+    [800,1000] Wake up and get ready for the day; 💤
+    [1000,1030] Prepare breakfast and eat; 🍳🥙
+    [1030,1700] Work in office; 💻📊
+    ...
+    [1700,1800] Prepare dinner and eat; 🍝🥗
+    [1800,2000] Watch TV; 📺
+    [2000,800] Sleep; 💤
+`;
+
+    // Set the OpenAI API parameters
+    const initialParameters: CreateChatCompletionRequest = {
+      model: this.model,
+      messages: [
+        {
+          role: "user",
+          content: initialPrompt,
+        },
+      ],
+      temperature: 0.7,
+      max_tokens: 500,
+      n: 1,
+    };
+
+    // Call the OpenAI API
+    let response = await this.openai.createChatCompletion(initialParameters);
+
+    // Get the generated day plan from the response
+    const generatedDayPlan = response.data.choices[0].message?.content.trim();
+
+    if (!generatedDayPlan) {
+      console.log("ERROR: No day plan generated");
+      return [];
+    }
+
+    // Use regex to parse the generated day plan and convert it into an array of tasks
+    const regex = /\[(\d+),(\d+)\]\s+(.+)/g;
+    let match;
+    let tasks: {
+      start: number;
+      end: number;
+      description: string;
+    }[] = [];
+
+    while ((match = regex.exec(generatedDayPlan)) !== null) {
+      tasks.push({
+        start: parseInt(match[1]),
+        end: parseInt(match[2]),
+        description: match[3].trim(),
+      });
+    }
+
+    // If depth is 1, return the tasks
+    if (depth === 1) {
+      return tasks;
+    }
+
+    // Prepare task breakdown prompt
+    const taskPromises = tasks.map((task, i) => {
+      const breakdownPrompt = `breakdown the following task in minutes blocks further in the same format. If it's a single task and cannot be broken down further, 
+      keep as is - 
+[${task.start},${task.end}] ${task.description}`;
+
+      const breakdownParameters: CreateChatCompletionRequest = {
+        model: this.model,
+        messages: [
+          {
+            role: "user",
+            content: initialPrompt,
+          },
+          {
+            role: "assistant",
+            content: generatedDayPlan,
+          },
+          {
+            role: "user",
+            content: breakdownPrompt,
+          },
+        ],
+        temperature: 0.7,
+        max_tokens: 500,
+        n: 1,
+      };
+
+      return this.openai.createChatCompletion(breakdownParameters);
+    });
+
+    const breakdownResponses = await Promise.all(taskPromises);
+
+    // Get the generated day plan from the response
+    const breakdowns = breakdownResponses.map((response) => {
+      const generatedBreakdown =
+        response.data.choices[0].message?.content.trim();
+
+      if (!generatedBreakdown) {
+        console.log("ERROR: No breakdown generated");
+        return [];
+      }
+
+      // Use regex to parse the generated day plan and convert it into an array of tasks
+      const regex = /\[(\d+),(\d+)\]\s+(.+)/g;
+      let match;
+      let breakdown: {
+        start: number;
+        end: number;
+        description: string;
+      }[] = [];
+
+      while ((match = regex.exec(generatedBreakdown)) !== null) {
+        breakdown.push({
+          start: parseInt(match[1]),
+          end: parseInt(match[2]),
+          description: match[3].trim(),
+        });
+      }
+
+      return breakdown;
+    });
+
+    // Flatten the breakdowns array
+    const flattenedBreakdowns = breakdowns.reduce(
+      (acc, breakdown) => [...acc, ...breakdown],
+      []
+    );
+
+    // Sort the flattened breakdowns array
+    const sortedBreakdowns = flattenedBreakdowns.sort(
+      (a, b) => a.start - b.start
+    );
+
+    // Remove any duplicate tasks
+    const uniqueBreakdowns = sortedBreakdowns.filter(
+      (task, i, breakdowns) =>
+        breakdowns.findIndex(
+          (t) =>
+            t.start === task.start ||
+            t.end === task.end ||
+            t.description === task.description
+        ) === i
+    );
+
+    return uniqueBreakdowns;
   }
 
   async decomposePlanItem(

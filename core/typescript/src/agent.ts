@@ -12,11 +12,29 @@ import {
   Reflection,
   World,
 } from "./types";
-import sampleAgentPlan from "./samplePlan.json";
+import henry_johnson from "./cachedPlans/henry_johnson.json";
+import james_johnson from "./cachedPlans/james_johnson.json";
+import linda_johnson from "./cachedPlans/linda_johnson.json";
+import nicole_johnson from "./cachedPlans/nicole_johnson.json";
+import lucy_miller from "./cachedPlans/lucy_miller.json";
+import michael_miller from "./cachedPlans/michael_miller.json";
+import susan_miller from "./cachedPlans/susan_miller.json";
+import thomas_miller from "./cachedPlans/thomas_miller.json";
 
 export enum AgentEvents {
   TASK_FINISHED = "TASK_FINISHED",
 }
+
+const cachedPlans: { [key: string]: Plan[] } = {
+  henry_johnson: henry_johnson as Plan[],
+  james_johnson: james_johnson as Plan[],
+  linda_johnson: linda_johnson as Plan[],
+  nicole_johnson: nicole_johnson as Plan[],
+  lucy_miller: lucy_miller as Plan[],
+  michael_miller: michael_miller as Plan[],
+  susan_miller: susan_miller as Plan[],
+  thomas_miller: thomas_miller as Plan[],
+};
 
 export class Agent extends EventEmitter {
   engine: AgentEngine;
@@ -171,8 +189,8 @@ export class Agent extends EventEmitter {
   async createPlan(testing = false): Promise<void> {
     try {
       if (testing) {
-        // Read from local JSON file
-        this.dayPlan.push(...(sampleAgentPlan as Plan[]));
+        // Read from local JSON file based on agent id, if not found, use sample plan
+        this.dayPlan = cachedPlans[this.id] || cachedPlans["thomas_miller"];
         // Execute the new plan
         await this.executeCurrentTask();
 
@@ -180,52 +198,42 @@ export class Agent extends EventEmitter {
       }
 
       // API requests
-      const dayPlan = await this.engine.getDayPlan(
+      const detailedPlan = await this.engine.createTaskList(
         this.name,
         this.age,
         this.personality
       );
 
-      for (const planItem of dayPlan) {
-        const detailedPlan = await this.engine.decomposePlanItem(
-          this.name,
-          this.age,
-          this.personality,
-          dayPlan,
-          dayPlan.indexOf(planItem)
-        );
+      // Convert the detailed plan to Plan memory objects
+      const planMemories: Promise<Plan>[] = detailedPlan.map(
+        async (planItem, index): Promise<Plan> => {
+          const importance = await this.engine.getImportanceScore(
+            planItem.description
+          );
+          const embedding = await this.engine.getEmbedding(
+            planItem.description
+          );
 
-        // Convert the detailed plan to Plan memory objects
-        const planMemories: Promise<Plan>[] = detailedPlan.map(
-          async (planItem): Promise<Plan> => {
-            const importance = await this.engine.getImportanceScore(
-              planItem.description
-            );
-            const embedding = await this.engine.getEmbedding(
-              planItem.description
-            );
+          return {
+            id: `plan_${this.dayPlan.length + index + 1}`,
+            createdAt: dateToString(new Date()),
+            start: planItem.start,
+            end: planItem.end,
+            description: planItem.description,
+            type: MemoryType.PLAN,
+            embedding,
+            importance,
+            executed: false,
+            latestAccess: dateToString(new Date()),
+          };
+        }
+      );
 
-            return {
-              id: `plan_${this.dayPlan.length + 1}`,
-              createdAt: dateToString(new Date()),
-              start: planItem.start,
-              end: planItem.end,
-              description: planItem.description,
-              type: MemoryType.PLAN,
-              embedding,
-              importance,
-              executed: false,
-              latestAccess: dateToString(new Date()),
-            };
-          }
-        );
+      // resolve the promises
+      const resolvedPlanMemories = await Promise.all(planMemories);
 
-        // resolve the promises
-        const resolvedPlanMemories = await Promise.all(planMemories);
-
-        // Add the detailed plan to the agent's day plan
-        this.dayPlan.push(...resolvedPlanMemories);
-      }
+      // Add the detailed plan to the agent's day plan
+      this.dayPlan.push(...resolvedPlanMemories);
 
       // Execute the new plan
       await this.executeCurrentTask();
@@ -254,7 +262,7 @@ export class Agent extends EventEmitter {
     // Update action
     this.action = {
       status: currentTask.description,
-      emoji: currentTask.description.split("|")[1].replace(" ", ""),
+      emoji: currentTask.description.split(";")[1].replace(" ", ""),
     };
 
     const taskDuration = currentTask.end - currentTask.start;
@@ -292,7 +300,7 @@ export class Agent extends EventEmitter {
     // update action status to next task
     this.action = {
       status: nextTask.description,
-      emoji: nextTask.description.split("|")[1].replace(" ", ""),
+      emoji: nextTask.description.split(";")[1].replace(" ", ""),
     };
 
     console.log(`Agent ${this.name} should go to ${nextLocation}`);
