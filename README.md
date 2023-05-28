@@ -18,6 +18,7 @@ You can use them to:
 
 ## See it in the wild 🐪
 
+![basic demo](https://raw.githubusercontent.com/toughyear/blog-uploads/main/uploads/demo_2.gif)
 We created a sandbox simulation based on the alpha version of the agent architecture. Check out [the live demo](http://demo.multimode.run/).
 
 Or check out the [demo video](https://www.youtube.com/watch?v=hU4fJ1Gwxag) on Youtube.
