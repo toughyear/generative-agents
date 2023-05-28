@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from "react";
+import ReactGA from "react-ga4";
 import "./App.css";
 import { Routes, Route } from "react-router-dom";
 import Game from "./Game";
 import Test from "./pages/test";
+
+const TRACKING_ID = "G-0WM463S75Q";
+ReactGA.initialize(TRACKING_ID);
 
 function App() {
   const openaiKeyFromEnv = process.env.REACT_APP_OPENAI_API_KEY;
