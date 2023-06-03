@@ -33,6 +33,7 @@ export interface BaseMemory {
   id: string;
   createdAt: string;
   description: string;
+  /** Importance distinguishes mundane from core memories, by assigning a higher score to those memory objects that the agent believes to be importan */
   importance: number;
   latestAccess: string;
   embedding: number[];
