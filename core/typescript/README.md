@@ -74,7 +74,7 @@ replyWithContext: (message: string, participants: string[]) => Promise<string>;
 
 ### Repo structure 📚
 
-The repository is divided into two parts -
+The [repository](https://github.com/toughyear/generative-agents) is divided into two parts -
 
 ```
 /core/[language]
