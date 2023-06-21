@@ -1,0 +1,1 @@
+export const DEFAULT_IMPORTANCE_SCORE = 7;

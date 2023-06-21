@@ -1,3 +1,3 @@
-export { Agent, AgentEvents } from "./agent";
-export { AgentEngine } from "./engine";
-export { Rectangle, buildSpatialWorld, sampleWorld } from "./worldBuilder";
+export { Agent } from "./Agent/agent";
+export { Engine } from "./Engine/engine";
+export * as Interface from "./interface";

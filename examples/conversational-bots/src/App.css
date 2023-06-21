@@ -1,0 +1,43 @@
+.app-root {
+  background-color: #171717;
+  box-sizing: border-box;
+  padding: 40px;
+  height: 100vh;
+  color: #fff;
+}
+
+.agent-container {
+  display: flex;
+  justify-content: center;
+}
+
+.agent {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 12px;
+  width: 256px;
+  border: 1px solid #fff;
+  border-radius: 12px;
+  padding: 16px 8px;
+  font-size: 14px;
+  box-shadow: 8px 5px 5px rgb(189, 45, 45);
+}
+
+.agent-chat-button {
+  width: 100%;
+  cursor: pointer;
+  background-color: #fff;
+  color: #171717;
+  outline: none;
+  padding: 8px 16px;
+  border: none;
+}
+
+.chat-container {
+  position: absolute;
+  background-color: #fff;
+  width: 30%;
+  height: 600px;
+  left: 50%;
+}
