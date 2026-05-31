@@ -27,7 +27,7 @@ Or check out the [demo video](https://www.youtube.com/watch?v=hU4fJ1Gwxag) on Yo
 
 ## Usage ⚙️
 
-We have started with a Typescript implementation of the agent architecture and plan to add more languages in the future.
+We have started with a TypeScript implementation of the agent architecture and plan to add more languages in the future.
 
 You can create a sample agent with the following code:
 
@@ -81,7 +81,7 @@ The repository is divided into two parts -
 /examples/[type]
 ```
 
-`/core` contains the core implementation of the agent architecture. It is divided into language specific folders. Currently, we only have a Typescript implementation.
+`/core` contains the core implementation of the agent architecture. It is divided into language specific folders. Currently, we only have a TypeScript implementation.
 
 `/examples` contains examples of how to use the core implementation. Currently, we have an example of a React + Phaser implementation of the agent architecture in a 2d top down pixelart game.
 
