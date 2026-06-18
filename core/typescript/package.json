@@ -13,6 +13,7 @@
   },
   "author": "@toughyear",
   "dependencies": {
+    "nanoid": "^4.0.2",
     "openai": "^3.2.1"
   },
   "repository": {
