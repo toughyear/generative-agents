@@ -4,6 +4,8 @@ import { AgentPersonality, World } from "./types";
 import { getAllKeys } from "./formatters";
 import { Agent } from "./agent";
 
+export const DEFAULT_IMPORTANCE_SCORE: number = 7;
+export const DEFAULT_DECAY_FACTOR: number = 0.94;
 /**
  * returns a engine instance that manages agents and their inference requirements
  */
@@ -28,6 +30,11 @@ export class AgentEngine {
     return data.data[0].embedding;
   }
 
+  /**
+   * Function to calculate the importance score of a memory.
+   * @param memoryDescription Input memory description the agent will recieve while observing.
+   * @returns importance score number between 1 and 10. If API fails returns 7.
+   */
   async getImportanceScore(memoryDescription: string): Promise<number> {
     // create the prompt for the OpenAI API
     const prompt = `On the scale of 1 to 10, where 1 is purely mundane
@@ -61,7 +68,7 @@ export class AgentEngine {
       return score;
     } catch (error: any) {
       console.log(error);
-      return 7;
+      return DEFAULT_IMPORTANCE_SCORE;
     }
   }
 
@@ -78,10 +85,17 @@ export class AgentEngine {
     return score;
   }
 
+  /**
+   * Recency assings a higher score to memories that were retrieved most recently.
+   * @param lastRetrieved Last time a particular memeory was retrieved.
+   * @param currentTime present time. This is needed to calculate the time difference between the last retrieval and the present time.
+   * @param decayFactor In our implementation, we treat recency as an exponential decay function over the number of sandbox game hours since the memory was last retrieved
+   * @returns recency score
+   */
   getRecencyScore(
     lastRetrieved: Date,
     currentTime: Date,
-    decayFactor: number = 0.94
+    decayFactor: number = DEFAULT_DECAY_FACTOR
   ): number {
     const MILLISECONDS_PER_HOUR = 3600000;
     const minutesSinceLastRetrieval =
@@ -96,14 +110,23 @@ export class AgentEngine {
 
     return normalizedRecency;
   }
-
+  /**
+   *
+   * @param importanceScore importance score calculated by the getImportanceScore function
+   * @param queryEmbedding embedding of the input question to calculate cosine similarity. Used by the getRelevanceScore function.
+   * @param memoryEmbedding embedding of the memory description
+   * @param lastRetrieved time the memory was last retrieved. Used by the getRecencyScore function.
+   * @param currentTime time when calculating the retrieval score. Used by the getRecencyScore function.
+   * @param decayFactor In our implementation, we treat recency as an exponential decay function over the number of sandbox game hours since the memory was last retrieved
+   * @returns retrieval score
+   */
   async getRetrievalScore(
     importanceScore: number,
     queryEmbedding: number[],
     memoryEmbedding: number[],
     lastRetrieved: Date,
     currentTime: Date,
-    decayFactor: number = 0.94
+    decayFactor: number = DEFAULT_DECAY_FACTOR
   ): Promise<number> {
     // Get the individual scores
     const relevanceScore = await this.getRelevanceScore(
@@ -129,6 +152,12 @@ export class AgentEngine {
     return score;
   }
 
+  /**
+   *
+   * @param description Agents top 100 memories descirption as a string
+   * @param n Number of questions to be generated for the agent to reflect upon.
+   * @returns Returns {n} questions for the agent to reflect upon.
+   */
   async getSalientQuestions(
     description: string,
     n: number = 3
@@ -248,6 +277,14 @@ What would ${name}'s day look like? Write in the following format:
     return dayPlan;
   }
 
+  /**
+   *
+   * @param name Name of the agent
+   * @param age Age of the agent. Specified when intialising the agent.
+   * @param personality personality of the agent based on which it will create tasks.
+   * @param depth If a task should be breakdown into subtasks, how many levels of breakdown should be done.
+   * @returns List of tasks for the agent to perform.
+   */
   async createTaskList(
     name: string,
     age: number,
